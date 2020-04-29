@@ -1,0 +1,8 @@
+add_subdirectory(OpticalFeatures)
+add_subdirectory(ClassStatistics)
+add_subdirectory(ClassStatisticsRatio)
+add_subdirectory(Composite)
+add_subdirectory(BackscatterTemporalFeatures)
+add_subdirectory(StandardDeviation)
+add_subdirectory(CoherenceMonthlyFeatures)
+add_subdirectory(classification)
