@@ -9,27 +9,34 @@ find_package(OTB REQUIRED)
 include(${OTB_USE_FILE})
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-missing-field-initializers -flto -mno-avx -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-missing-field-initializers")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-missing-field-initializers")
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_BUILD_TYPE Release)
+  set(CMAKE_CXX_FLAGS_DEBUG "-g")
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-missing-field-initializers")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 add_definitions(-DVCL_CAN_STATIC_CONST_INIT_FLOAT=0)
 
-add_subdirectory(Composite)
+#add_subdirectory(Composite)
 add_subdirectory(CropType)
 add_subdirectory(CropMask)
-add_subdirectory(VegetationStatus)
-add_subdirectory(DEM-WB)
-add_subdirectory(CreateFootprint)
+#add_subdirectory(VegetationStatus)
+#add_subdirectory(DEM-WB)
+#add_subdirectory(CreateFootprint)
 add_subdirectory(Common)
 add_subdirectory(ContinuousColorMapping)
 add_subdirectory(ProductFormatters)
 add_subdirectory(ProductReaders)
-add_subdirectory(AgriculturalPractices)
-add_subdirectory(Sen4CAP)
+#add_subdirectory(AgriculturalPractices)
+#add_subdirectory(Sen4CAP)
 #add_subdirectory(AppDimensionalityReduction)
-add_subdirectory(merge-statistics)
+#add_subdirectory(merge-statistics)
 
+#[[
 install(FILES ../scripts/sen2agri_common.py
               ../scripts/split_shapefile.py
         DESTINATION usr/lib/python2.7/site-packages/)
@@ -58,3 +65,4 @@ install(FILES dist/sen2agri-disable-thp.conf
 
 install(FILES dist/50-open-files.conf
         DESTINATION etc/security/limits.d)
+]]
