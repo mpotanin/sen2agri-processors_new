@@ -12,4 +12,4 @@ otb_create_application(
 #  add_subdirectory(test)
 #endif()
 
-install(TARGETS otbapp_ProductFormatter DESTINATION usr/lib/otb/applications/)
+#install(TARGETS otbapp_ProductFormatter DESTINATION usr/lib/otb/applications/)

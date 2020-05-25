@@ -10,11 +10,11 @@ otb_create_application(
   LINK_LIBRARIES ${OTB_LIBRARIES}
                  MACCSMetadata
                  TimeSeriesReader)
-
+include_directories(../../Common/OTBExtensions)
+#[[
 if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-include_directories(../../Common/OTBExtensions)
-
 install(TARGETS otbapp_CropMaskTrainImagesClassifier DESTINATION usr/lib/otb/applications/)
+]]

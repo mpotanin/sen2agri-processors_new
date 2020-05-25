@@ -38,4 +38,4 @@ target_link_libraries(MACCSMetadata
 
 target_include_directories(MACCSMetadata PUBLIC ../include)
 
-install(TARGETS MACCSMetadata DESTINATION usr/lib/)
+#install(TARGETS MACCSMetadata DESTINATION usr/lib/)

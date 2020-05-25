@@ -18,4 +18,4 @@ target_link_libraries(Sen2AgriCommonUtils
 
 target_include_directories(Sen2AgriCommonUtils PUBLIC ../include)
 
-install(TARGETS Sen2AgriCommonUtils DESTINATION usr/lib/)
+#install(TARGETS Sen2AgriCommonUtils DESTINATION usr/lib/)
