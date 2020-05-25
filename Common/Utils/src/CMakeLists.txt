@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED COMPONENTS filesystem regex)
+find_package(Boost REQUIRED COMPONENTS filesystem)
 
 set(Sen2AgriCommonUtils_HEADERS
     ../include/GlobalDefs.h
