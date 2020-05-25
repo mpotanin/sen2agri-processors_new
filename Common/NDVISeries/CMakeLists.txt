@@ -11,13 +11,13 @@ otb_create_application(
   LINK_LIBRARIES ${OTB_LIBRARIES}
                  MACCSMetadata
                  TimeSeriesReader)
-
+#[[
 if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
-
+]]
 include_directories(../OTBExtensions)
 
 add_dependencies(otbapp_NDVISeries OTBExtensions)
 
-install(TARGETS otbapp_NDVISeries DESTINATION usr/lib/otb/applications/)
+#install(TARGETS otbapp_NDVISeries DESTINATION usr/lib/otb/applications/)

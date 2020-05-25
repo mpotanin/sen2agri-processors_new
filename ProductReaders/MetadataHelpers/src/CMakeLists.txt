@@ -35,4 +35,4 @@ target_link_libraries(Sen2AgriProductReaders
 
 target_include_directories(Sen2AgriProductReaders PUBLIC ../include)
 
-install(TARGETS Sen2AgriProductReaders DESTINATION usr/lib/)
+#install(TARGETS Sen2AgriProductReaders DESTINATION usr/lib/)

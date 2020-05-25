@@ -26,4 +26,4 @@ target_link_libraries(Sen2AgriPrdMetaWriters
 
 target_include_directories(Sen2AgriPrdMetaWriters PUBLIC ../include)
 
-install(TARGETS Sen2AgriPrdMetaWriters DESTINATION usr/lib/)
+#install(TARGETS Sen2AgriPrdMetaWriters DESTINATION usr/lib/)
