@@ -198,7 +198,7 @@ private:
     // This application is called in the context of the unsupervised crop mask processor, where the input has more features
     // than should be used for trimming. It would be better to make the channel list configurable, but for now allow the
     // user to disable that hard-coded selection for inputs which don't have 5 bands.
-    AddParameter(ParameterType_Empty, "allbands", "Use all bands from the input file");
+    AddParameter(ParameterType_Bool, "allbands", "Use all bands from the input file");
     MandatoryOff("allbands");
 
     AddParameter(ParameterType_OutputImage, "out", "The training samples raster file");

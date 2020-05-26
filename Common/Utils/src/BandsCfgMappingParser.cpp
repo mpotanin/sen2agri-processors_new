@@ -18,7 +18,7 @@
 #include <sstream>
 #include <itkMacro.h>
 #include <algorithm>    // std::sort
-#include <boost/regex.hpp>
+#include "boost/regex.hpp"
 
 /********************************************************************
  *

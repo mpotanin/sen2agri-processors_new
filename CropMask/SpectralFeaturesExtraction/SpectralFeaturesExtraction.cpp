@@ -423,7 +423,7 @@ private:
 
         AddParameter(ParameterType_Float, "lambda", "Smoothing parameter of the Whittaker function");
 
-        AddParameter(ParameterType_Empty, "rededge", "Include Sentinel-2 vegetation red edge bands");
+        AddParameter(ParameterType_Bool, "rededge", "Include Sentinel-2 vegetation red edge bands");
         MandatoryOff("rededge");
 
         SetDefaultParameterFloat("lambda", 2);

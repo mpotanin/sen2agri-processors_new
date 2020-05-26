@@ -54,7 +54,7 @@ namespace Wrapper
     SetParameterDescription(
         "classifier.libsvm.c",
         "SVM models have a cost parameter C (1 by default) to control the trade-off between training errors and forcing rigid margins.");
-    AddParameter(ParameterType_Empty, "classifier.libsvm.opt", "Parameters optimization");
+    AddParameter(ParameterType_Bool, "classifier.libsvm.opt", "Parameters optimization");
     MandatoryOff("classifier.libsvm.opt");
     SetParameterDescription("classifier.libsvm.opt", "SVM parameters optimization flag.");
   }

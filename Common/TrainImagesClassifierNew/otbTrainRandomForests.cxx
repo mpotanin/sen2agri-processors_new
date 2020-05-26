@@ -66,7 +66,7 @@ void TrainImagesClassifier::InitRandomForestsParams()
                           "then the node will not be split.");
 
   //UseSurrogates : don't need to be exposed !
-  //AddParameter(ParameterType_Empty, "classifier.rf.sur", "Surrogate splits will be built");
+  //AddParameter(ParameterType_Bool, "classifier.rf.sur", "Surrogate splits will be built");
   //SetParameterDescription("classifier.rf.sur","These splits allow to work with missing data and compute variable importance correctly.");
 
   //MaxNumberOfCategories

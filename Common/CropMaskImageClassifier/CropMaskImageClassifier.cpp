@@ -192,13 +192,13 @@ private:
     AddParameter(ParameterType_String, "mission", "The main raster series that will be used. By default SPOT is used");
     MandatoryOff("mission");
 
-    AddParameter(ParameterType_Empty, "rededge", "Include Sentinel-2 vegetation red edge bands");
+    AddParameter(ParameterType_Bool, "rededge", "Include Sentinel-2 vegetation red edge bands");
     MandatoryOff("rededge");
 
     AddParameter(ParameterType_Int, "window", "The number of dates in the temporal window");
     SetDefaultParameterInt("window", 2);
 
-    AddParameter(ParameterType_Empty,
+    AddParameter(ParameterType_Bool,
                  "bm",
                  "If set use the features from Benchmarking instead of the features from ATBD");
     MandatoryOff("bm");

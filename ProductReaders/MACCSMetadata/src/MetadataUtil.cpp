@@ -13,9 +13,9 @@
 
  =========================================================================*/
  
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
+#include "boost/algorithm/string/predicate.hpp"
+#include "boost/filesystem.hpp"
+#include "boost/algorithm/string.hpp"
 
 #include "MetadataUtil.hpp"
 #include "MACCSMetadataReader.hpp"

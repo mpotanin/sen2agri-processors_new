@@ -65,7 +65,7 @@ void TrainImagesClassifier::InitDecisionTreeParams()
                           "then the node will not be split.");
 
   //UseSurrogates : don't need to be exposed !
-  //AddParameter(ParameterType_Empty, "classifier.dt.sur", "Surrogate splits will be built");
+  //AddParameter(ParameterType_Bool, "classifier.dt.sur", "Surrogate splits will be built");
   //SetParameterDescription("classifier.dt.sur","These splits allow to work with missing data and compute variable importance correctly.");
 
   //MaxCategories
@@ -83,13 +83,13 @@ void TrainImagesClassifier::InitDecisionTreeParams()
       "classifier.dt.f", "If cv_folds > 1, then it prunes a tree with K-fold cross-validation where K is equal to cv_folds.");
 
   //Use1seRule
-  AddParameter(ParameterType_Empty, "classifier.dt.r", "Set Use1seRule flag to false");
+  AddParameter(ParameterType_Bool, "classifier.dt.r", "Set Use1seRule flag to false");
   SetParameterDescription(
       "classifier.dt.r",
       "If true, then a pruning will be harsher. This will make a tree more compact and more resistant to the training data noise but a bit less accurate.");
 
   //TruncatePrunedTree
-  AddParameter(ParameterType_Empty, "classifier.dt.t", "Set TruncatePrunedTree flag to false");
+  AddParameter(ParameterType_Bool, "classifier.dt.t", "Set TruncatePrunedTree flag to false");
   SetParameterDescription("classifier.dt.t", "If true, then pruned branches are physically removed from the tree.");
 
   //Priors are not exposed.

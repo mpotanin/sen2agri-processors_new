@@ -77,7 +77,7 @@ void TrainImagesClassifier::InitGradientBoostedTreeParams()
         "if the tree is pruned.");
 
   //UseSurrogates : don't need to be exposed !
-  //AddParameter(ParameterType_Empty, "classifier.gbt.sur", "Surrogate splits will be built");
+  //AddParameter(ParameterType_Bool, "classifier.gbt.sur", "Surrogate splits will be built");
   //SetParameterDescription("classifier.gbt.sur","These splits allow to work with missing data and compute variable importance correctly.");
 
 }
