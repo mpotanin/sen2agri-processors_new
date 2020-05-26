@@ -14,8 +14,8 @@
  =========================================================================*/
 
 #define BOOST_NO_CXX11_SCOPED_ENUMS
-#include "boost/filesystem.hpp"
-#include "boost/algorithm/string/predicate.hpp"
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "otbWrapperApplication.h"
 #include "otbWrapperApplicationFactory.h"

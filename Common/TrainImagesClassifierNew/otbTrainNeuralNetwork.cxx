@@ -30,7 +30,7 @@
 
  =========================================================================*/
 
-#include "boost/lexical_cast.hpp"
+#include <boost/lexical_cast.hpp>
 #include "otbTrainImagesClassifier.h"
 
 namespace otb
