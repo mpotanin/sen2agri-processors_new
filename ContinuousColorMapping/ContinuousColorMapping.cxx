@@ -22,7 +22,7 @@
 
 #include "ContinuousColorMappingFilter.hxx"
 #include "otbStreamingStatisticsVectorImageFilter.h"
-#include <boost/algorithm/string.hpp>
+#include "boost/algorithm/string.hpp"
 
 namespace otb
 {
