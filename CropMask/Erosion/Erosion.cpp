@@ -134,7 +134,7 @@ private:
     // \begin{description}
     // \item[\code{SetName()}] Name of the application.
     // \item[\code{SetDescription()}] Set the short description of the class.
-    // \item[\code{SetDocName()}] Set long name of the application (that can be displayed \dots).
+    // \item[\code{//SetDocName()}] Set long name of the application (that can be displayed \dots).
     // \item[\code{SetDocLongDescription()}] This methods is used to describe the class.
     // \item[\code{SetDocLimitations()}] Set known limitations (threading, invalid pixel type \dots) or bugs.
     // \item[\code{SetDocAuthors()}] Set the application Authors. Author List. Format : "John Doe, Winnie the Pooh" \dots
@@ -146,7 +146,7 @@ private:
       SetName("Erosion");
       SetDescription("The feature extraction step produces the relevant features for the classication.");
 
-      SetDocName("Erosion");
+      //SetDocName("Erosion");
       SetDocLongDescription("The feature extraction step produces the relevant features for the classication. The features are computed"
                             "for each date of the resampled and gaplled time series and concatenated together into a single multi-channel"
                             "image file. The selected features are the surface reflectances, the NDVI, the NDWI and the brightness.");

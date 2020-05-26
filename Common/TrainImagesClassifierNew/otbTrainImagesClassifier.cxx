@@ -44,7 +44,7 @@ void TrainImagesClassifier::DoInit()
                 "Train a classifier from multiple pairs of images and training vector data.");
 
     // Documentation
-    SetDocName("Train a classifier from multiple images");
+    //SetDocName("Train a classifier from multiple images");
     SetDocLongDescription(
                 "This application performs a classifier training from multiple pairs of input images and training vector data. "
                 "Samples are composed of pixel values in each band optionally centered and reduced using an XML statistics file produced by "

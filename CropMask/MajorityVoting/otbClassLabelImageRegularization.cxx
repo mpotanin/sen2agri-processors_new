@@ -76,7 +76,7 @@ private:
     SetDescription("Perform classification regularization using a segmentation");
 
     // Documentation
-    SetDocName("Class label image regularization ");
+    //SetDocName("Class label image regularization ");
     SetDocLongDescription("This application performs classification (input 1) regularization using a prior segmentation (input 2)"
 			  "For each segment, the most frequent class label is obtained and set to the new classification label image (output)");
     SetDocLimitations("Streaming is not available");

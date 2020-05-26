@@ -363,7 +363,7 @@ private:
         // \begin{description}
         // \item[\code{SetName()}] Name of the application.
         // \item[\code{SetDescription()}] Set the short description of the class.
-        // \item[\code{SetDocName()}] Set long name of the application (that can be displayed
+        // \item[\code{//SetDocName()}] Set long name of the application (that can be displayed
         // \dots).
         // \item[\code{SetDocLongDescription()}] This methods is used to describe the class.
         // \item[\code{SetDocLimitations()}] Set known limitations (threading, invalid pixel type
@@ -380,7 +380,7 @@ private:
         SetDescription(
             "Spectral feature extraction for unsupervised crop mask.");
 
-        SetDocName("SpectralFeaturesExtraction");
+        //SetDocName("SpectralFeaturesExtraction");
         SetDocLongDescription("Spectral feature extraction for unsupervised crop mask.");
         SetDocLimitations("None");
         SetDocSeeAlso(" ");

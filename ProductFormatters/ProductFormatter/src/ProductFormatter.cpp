@@ -246,7 +246,7 @@ private:
         SetName("ProductFormatter");
         SetDescription("Creates folder ierarchy and metadata files");
 
-        SetDocName("ProductFormatter");
+        //SetDocName("ProductFormatter");
         SetDocLongDescription("Creates folder ierarchy and metadata files");
         SetDocLimitations("None");
         SetDocAuthors("ATA");

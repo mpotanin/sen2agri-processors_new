@@ -158,7 +158,7 @@ public:
         SetName("PrincipalComponentAnalysis");
         SetDescription("Performs Principal Component Analysis on the input image.");
 
-        SetDocName("PrincipalComponentAnalysis");
+        //SetDocName("PrincipalComponentAnalysis");
         SetDocLongDescription("Performs PCA on an image. Has support for ignoring a background value.");
         SetDocLimitations("None");
         SetDocAuthors("LN");

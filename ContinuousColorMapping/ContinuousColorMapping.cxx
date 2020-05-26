@@ -53,7 +53,7 @@ private:
         SetName("ContinuousColorMapping");
         SetDescription("Applies a color ramp to an image");
 
-        SetDocName("ContinuousColorMapping");
+        //SetDocName("ContinuousColorMapping");
         SetDocLongDescription(
             "Applies a color ramp to an image");
         SetDocLimitations("None");

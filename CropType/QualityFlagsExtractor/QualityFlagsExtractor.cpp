@@ -166,7 +166,7 @@ private:
       SetName("QualityFlagsExtractor");
       SetDescription("Extract only the needed bands from a temporal series of images.");
 
-      SetDocName("QualityFlagsExtractor");
+      //SetDocName("QualityFlagsExtractor");
       SetDocLongDescription("Extract the status flags for the CropType and CropMask processors.");
       SetDocLimitations("None");
       SetDocAuthors("CUU");

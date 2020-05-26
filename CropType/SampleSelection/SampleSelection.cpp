@@ -50,7 +50,7 @@ private:
         SetDescription("Split the reference data into 2 disjoint sets, the training set and the "
                        "validation set.");
 
-        SetDocName("SampleSelection");
+        //SetDocName("SampleSelection");
         SetDocLongDescription(
             "The sample selection consists in splitting the reference data into 2 disjoint sets, "
             "the training set and the validation set. "
