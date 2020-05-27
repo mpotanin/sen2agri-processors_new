@@ -586,7 +586,12 @@ static void FixProductOrganization(CommonProductOrganization &po)
             if (dir.empty()) {
                 boost::filesystem::path p(file.FileLocation);
                 p.remove_filename();
+                //dir = p.native();
+#if defined(WIN32) || defined(_WIN32) || defined(_WINDOWS)
+                dir = _wstrToUtf8__(p.native());
+#else
                 dir = p.native();
+#endif
             }
         }
     }
