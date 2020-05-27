@@ -16,9 +16,9 @@
 #include "MACCSS2MetadataHelper.h"
 #include "ViewingAngles.hpp"
 
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/system/error_code.hpp>
+#include "boost/algorithm/string/predicate.hpp"
+#include "boost/filesystem.hpp"
+#include "boost/system/error_code.hpp"
 
 template <typename PixelType, typename MasksPixelType>
 bool MACCSS2MetadataHelper<PixelType, MasksPixelType>::is_number(const std::string& s)

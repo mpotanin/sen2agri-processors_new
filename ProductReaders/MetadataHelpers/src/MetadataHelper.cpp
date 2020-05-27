@@ -17,8 +17,8 @@
 #include <time.h>
 #include <ctime>
 #include <cmath>
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string/predicate.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/algorithm/string/predicate.hpp"
 
 template<typename PixelType, typename MasksPixelType>
 MetadataHelper<PixelType, MasksPixelType>::MetadataHelper()

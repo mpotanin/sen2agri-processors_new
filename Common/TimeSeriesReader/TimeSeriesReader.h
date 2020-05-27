@@ -43,7 +43,7 @@
 #include <string>
 #include <map>
 
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 #include "MetadataHelper.h"
 
 typedef otb::VectorImage<float, 2>                                 ImageType;
