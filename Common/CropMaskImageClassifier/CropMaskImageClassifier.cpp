@@ -271,7 +271,13 @@ private:
           mission = this->GetParameterString("mission");
       }
 
-      auto bm = GetParameterEmpty("bm");
+      //auto bm = GetParameterEmpty("bm");
+      //substitute for GetParameterEmpty("bm")
+      if (IsParameterEnabled("bm"))
+      {
+          //std::cout << "BM: " << GetParameterAsString("bm") << std::endl;
+          m_Preprocessor->SetBM(GetParameterAsString("bm") == "true");
+      }
       auto window = GetParameterInt("window");
 
       TileData td;
@@ -280,11 +286,15 @@ private:
       m_Preprocessor = CropMaskPreprocessing::New();
       m_Preprocessor->SetPixelSize(pixSize);
       m_Preprocessor->SetMission(mission);
-      if (GetParameterEmpty("rededge")) {
-          m_Preprocessor->SetIncludeRedEdge(true);
+      //substitute for GetParameterEmpty("rededge")
+      //if (GetParameterEmpty("rededge")) {
+      //    m_Preprocessor->SetIncludeRedEdge(true);
+      //}
+      if (IsParameterEnabled("rededge")) {
+          m_Preprocessor->SetIncludeRedEdge(GetParameterAsString("rededge") == "true");
       }
 
-      m_Preprocessor->SetBM(bm);
+      //m_Preprocessor->SetBM(bm);
       m_Preprocessor->SetW(window);
       m_Preprocessor->SetDelta(0.05f);
       m_Preprocessor->SetTSoil(0.2f);

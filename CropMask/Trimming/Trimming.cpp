@@ -259,7 +259,8 @@ private:
       const double alpha = GetParameterFloat("alpha");
       const int nbSamples = GetParameterInt("nbsamples");
       const int seed = GetParameterInt("seed");
-      auto allbands = GetParameterEmpty("allbands");
+      //auto allbands = GetParameterEmpty("allbands");
+      auto allbands = IsParameterEnabled("allbands");
 
       //Read the Features input file
       m_FeaturesReader->SetFileName(GetParameterString("feat"));

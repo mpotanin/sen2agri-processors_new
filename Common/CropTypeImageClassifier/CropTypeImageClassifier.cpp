@@ -270,7 +270,12 @@ private:
       m_Preprocessor = CropTypePreprocessing::New();
       m_Preprocessor->SetPixelSize(pixSize);
       m_Preprocessor->SetMission(mission);
-      if (GetParameterEmpty("rededge")) {
+      
+      //substitute for GetParameterEmpty
+      //if (GetParameterEmpty("rededge")) {
+      //    m_Preprocessor->SetIncludeRedEdge(true);
+      //}
+      if (IsParameterEnabled("rededge")) {
           m_Preprocessor->SetIncludeRedEdge(true);
       }
 

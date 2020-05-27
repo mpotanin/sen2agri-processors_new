@@ -485,8 +485,11 @@ private:
         m_Preprocessor = SpectralFeaturesPreprocessing::New();
         m_Preprocessor->SetPixelSize(pixSize);
         m_Preprocessor->SetMission(mission);
-        if (GetParameterEmpty("rededge")) {
-            m_Preprocessor->SetIncludeRedEdge(true);
+        //if (GetParameterEmpty("rededge")) {
+        //    m_Preprocessor->SetIncludeRedEdge(true);
+        //}
+        if (IsParameterEnabled("rededge")) {
+            m_Preprocessor->SetIncludeRedEdge(GetParameterAsString("rededge") == "true");
         }
         m_Preprocessor->SetLambda(lambda);
 

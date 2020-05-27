@@ -271,7 +271,7 @@ void CropMaskTrainImagesClassifier::DoExecute()
 
 
   auto preprocessors = CropMaskPreprocessingList::New();
-  auto bm = GetParameterEmpty("bm");
+ // auto bm = GetParameterEmpty("bm");
   auto window = GetParameterInt("window");
 
   // Loop through the sets of products
@@ -286,11 +286,16 @@ void CropMaskTrainImagesClassifier::DoExecute()
       preprocessors->PushBack(preprocessor);
       preprocessor->SetPixelSize(pixSize);
       preprocessor->SetMission(mission);
-      if (GetParameterEmpty("rededge")) {
-          preprocessor->SetIncludeRedEdge(true);
+      //if (GetParameterEmpty("rededge")) {
+      //    preprocessor->SetIncludeRedEdge(true);
+      //}
+      if (IsParameterEnabled("rededge")) {
+          //preprocessor->SetIncludeRedEdge(true);
+          preprocessor->SetIncludeRedEdge(GetParameterAsString("rededge") == "true");
       }
 
-      preprocessor->SetBM(bm);
+      //preprocessor->SetBM(bm);
+      preprocessor->SetBM(false);
       preprocessor->SetW(window);
       preprocessor->SetDelta(0.05f);
       preprocessor->SetTSoil(0.2f);
@@ -395,7 +400,7 @@ void CropMaskTrainImagesClassifier::DoExecute()
   for (const auto &key : booleanParams) {
       if (HasValue(key)) {
           app->EnableParameter(key);
-          app->SetParameterEmpty(key, GetParameterEmpty(key));
+          //app->SetParameterEmpty(key, GetParameterEmpty(key));
       }
   }
 

@@ -277,7 +277,10 @@ void CropTypeTrainImagesClassifier::DoExecute()
       preprocessor->SetPixelSize(pixSize);
       preprocessor->SetMission(mission);
 
-      if (GetParameterEmpty("rededge")) {
+      //if (GetParameterEmpty("rededge")) {
+      //    preprocessor->SetIncludeRedEdge(true);
+      //}
+      if (IsParameterEnabled("rededge")) {
           preprocessor->SetIncludeRedEdge(true);
       }
 
@@ -381,7 +384,7 @@ void CropTypeTrainImagesClassifier::DoExecute()
   for (const auto &key : booleanParams) {
       if (HasValue(key)) {
           app->EnableParameter(key);
-          app->SetParameterEmpty(key, GetParameterEmpty(key));
+          //app->SetParameterEmpty(key, GetParameterEmpty(key));
       }
   }
 
