@@ -25,6 +25,7 @@
 #include "otbStreamingResampleImageFilter.h"
 #include "otbImageListToVectorImageFilter.h"
 #include "ResamplingBandExtractor.h"
+#include "string_utils.hpp"
 
 #define UNUSED(expr) do { (void)(expr); } while (0)
 

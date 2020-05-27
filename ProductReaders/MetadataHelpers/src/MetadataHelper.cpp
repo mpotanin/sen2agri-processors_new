@@ -39,7 +39,12 @@ bool MetadataHelper<PixelType, MasksPixelType>::LoadMetadataFile(const std::stri
 
     boost::filesystem::path p(m_inputMetadataFileName);
     p.remove_filename();
+    //m_DirName = p.native();
+#if defined(WIN32) || defined(_WIN32) || defined(_WINDOWS)
+    m_DirName = _wstrToUtf8__(p.native());
+#else
     m_DirName = p.native();
+#endif
 
     return DoLoadMetadata(file);
 }
