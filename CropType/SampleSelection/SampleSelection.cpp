@@ -32,21 +32,21 @@ namespace otb
 
 namespace Wrapper
 {
-class SampleSelection : public Application
+class SampleSelectionAgri : public Application
 {
 public:
-    typedef SampleSelection Self;
+    typedef SampleSelectionAgri Self;
     typedef Application Superclass;
     typedef itk::SmartPointer<Self> Pointer;
     typedef itk::SmartPointer<const Self> ConstPointer;
 
     itkNewMacro(Self);
-    itkTypeMacro(SampleSelection, otb::Application);
+    itkTypeMacro(SampleSelectionAgri, otb::Application);
 
 private:
     void DoInit()
     {
-        SetName("SampleSelection");
+        SetName("SampleSelectionAgri");
         SetDescription("Split the reference data into 2 disjoint sets, the training set and the "
                        "validation set.");
 
@@ -237,4 +237,4 @@ private:
 }
 }
 
-OTB_APPLICATION_EXPORT(otb::Wrapper::SampleSelection)
+OTB_APPLICATION_EXPORT(otb::Wrapper::SampleSelectionAgri)
