@@ -1,7 +1,21 @@
 #include "TimeSeriesReader.h"
 #include "MetadataHelperFactory.h"
+#include "boost/date_time/posix_time/posix_time.hpp"
 
-int getDaysFromEpoch(const std::string &date)
+#if defined(WIN32) || defined(_WIN32) || defined(_WINDOWS)
+#define timegm _mkgmtime
+#endif
+
+#if defined(WIN32) || defined(_WIN32) || defined(_WINDOWS)
+int getDaysFromEpoch(const std::string& date)
+{
+    boost::posix_time::ptime t(boost::posix_time::from_iso_string(date + "T235959"));
+    struct tm pt_tm = to_tm(t);
+    int days = timegm(&pt_tm) / 86400;
+    return days;
+}
+#else
+int getDaysFromEpoch(const std::string& date)
 {
     struct tm tm = {};
     if (strptime(date.c_str(), "%Y%m%d", &tm) == NULL) {
@@ -10,6 +24,7 @@ int getDaysFromEpoch(const std::string &date)
     int days = timegm(&tm) / 86400;
     return days;
 }
+#endif
 
 void writeOutputDays(const std::vector<MissionDays> &days, const std::string &file)
 {
