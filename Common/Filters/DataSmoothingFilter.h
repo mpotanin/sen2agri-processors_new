@@ -24,9 +24,9 @@ struct ImageInfo
 
 void whit1(double lambda,
            int numValues,
-           const double * __restrict__ values,
-           const double * __restrict__ weights,
-           double * __restrict__ c, double * __restrict__ d, double * __restrict__ z)
+            double* values,//const double * __restrict__ values,
+            double* weights,//const double * __restrict__ weights,
+            double* c, double* d, double* z)//double * __restrict__ c, double * __restrict__ d, double * __restrict__ z)
 {
     const double eps = 0.0001;
 
