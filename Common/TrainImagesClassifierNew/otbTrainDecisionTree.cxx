@@ -106,7 +106,7 @@ void TrainImagesClassifierNew::TrainDecisionTree(ListSampleType::Pointer trainin
   classifier->SetMinSampleCount(GetParameterInt("classifier.dt.min"));
   classifier->SetRegressionAccuracy(GetParameterFloat("classifier.dt.ra"));
   classifier->SetMaxCategories(GetParameterInt("classifier.dt.cat"));
-  classifier->SetCVFolds(GetParameterInt("classifier.dt.f"));
+//  classifier->SetCVFolds(GetParameterInt("classifier.dt.f"));
   if (IsParameterEnabled("classifier.dt.r"))
     {
     classifier->SetUse1seRule(false);
