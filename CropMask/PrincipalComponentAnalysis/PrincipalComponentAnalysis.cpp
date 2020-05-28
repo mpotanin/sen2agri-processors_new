@@ -132,7 +132,8 @@ typedef float                                PixelValueType;
 typedef otb::VectorImage<PixelValueType, 2>  ImageType;
 
 typedef otb::PCAImageFilter<ImageType, ImageType, otb::Transform::FORWARD>  PCAFilterType;
-typedef otb::StreamingStatisticsVectorImageFilterEx<ImageType>              StreamingStatisticsVectorImageFilterType;
+//typedef otb::StreamingStatisticsVectorImageFilterEx<ImageType>              StreamingStatisticsVectorImageFilterType;
+typedef otb::StreamingStatisticsVectorImageFilter<ImageType>              StreamingStatisticsVectorImageFilterType;
 typedef FillNoDataImageFilter<ImageType>                                    FillNoDataImageFilterType;
 
 namespace otb
