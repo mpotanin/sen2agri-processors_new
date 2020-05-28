@@ -435,7 +435,7 @@ private:
   void DoExecute()
   {
       // The Quicklook OTB app spawns thousands of threads, try to avoid that
-      setenv("ITK_USE_THREADPOOL", "1", 0);
+      //setenv("ITK_USE_THREADPOOL", "1", 0);
 
       m_bVectPrd = (this->GetParameterInt("vectprd") != 0);
 
