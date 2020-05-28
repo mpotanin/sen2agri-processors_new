@@ -140,7 +140,7 @@ void TrainImagesClassifierNew::DoInit()
     InitSVMParams();
     InitBoostParams();
     InitDecisionTreeParams();
-    InitGradientBoostedTreeParams();
+//    InitGradientBoostedTreeParams();
     InitNeuralNetworkParams();
     InitNormalBayesParams();
     InitRandomForestsParams();
@@ -675,7 +675,7 @@ void TrainImagesClassifierNew::DoExecute()
     else if (classifierType == "gbt")
     {
 #ifdef OTB_USE_OPENCV
-        TrainGradientBoostedTree(trainingListSample, trainingLabeledListSample);
+//        TrainGradientBoostedTree(trainingListSample, trainingLabeledListSample);
 #else
         otbAppLogFATAL("Module OPENCV is not installed. You should consider turning OTB_USE_OPENCV on during cmake configuration.");
 #endif

@@ -53,7 +53,7 @@
 # include "otbSVMMachineLearningModel.h"
 # include "otbBoostMachineLearningModel.h"
 # include "otbDecisionTreeMachineLearningModel.h"
-# include "otbGradientBoostedTreeMachineLearningModel.h"
+//# include "otbGradientBoostedTreeMachineLearningModel.h"
 # include "otbNormalBayesMachineLearningModel.h"
 # include "otbNeuralNetworkMachineLearningModel.h"
 #endif
@@ -139,7 +139,7 @@ public:
   typedef otb::SVMMachineLearningModel<InternalPixelType, ListSampleGeneratorType::ClassLabelType> SVMType;
   typedef otb::BoostMachineLearningModel<InternalPixelType, ListSampleGeneratorType::ClassLabelType> BoostType;
   typedef otb::DecisionTreeMachineLearningModel<InternalPixelType, ListSampleGeneratorType::ClassLabelType> DecisionTreeType;
-  typedef otb::GradientBoostedTreeMachineLearningModel<InternalPixelType, ListSampleGeneratorType::ClassLabelType> GradientBoostedTreeType;
+ // typedef otb::GradientBoostedTreeMachineLearningModel<InternalPixelType, ListSampleGeneratorType::ClassLabelType> GradientBoostedTreeType;
   typedef otb::NeuralNetworkMachineLearningModel<InternalPixelType, ListSampleGeneratorType::ClassLabelType> NeuralNetworkType;
   typedef otb::NormalBayesMachineLearningModel<InternalPixelType, ListSampleGeneratorType::ClassLabelType> NormalBayesType;
 #endif
@@ -180,7 +180,7 @@ private:
   void InitBoostParams();
   void InitSVMParams();
   void InitDecisionTreeParams();
-  void InitGradientBoostedTreeParams();
+ // void InitGradientBoostedTreeParams();
   void InitNeuralNetworkParams();
   void InitNormalBayesParams();
   void InitRandomForestsParams();
@@ -195,7 +195,7 @@ private:
   void TrainBoost(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
   void TrainSVM(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
   void TrainDecisionTree(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
-  void TrainGradientBoostedTree(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
+//  void TrainGradientBoostedTree(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
   void TrainNeuralNetwork(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
   void TrainNormalBayes(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
   void TrainRandomForests(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
