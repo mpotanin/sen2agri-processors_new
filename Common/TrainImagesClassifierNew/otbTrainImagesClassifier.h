@@ -93,11 +93,11 @@ namespace otb
 namespace Wrapper
 {
 
-class TrainImagesClassifier: public Application
+class TrainImagesClassifierNew: public Application
 {
 public:
   /** Standard class typedefs. */
-  typedef TrainImagesClassifier Self;
+  typedef TrainImagesClassifierNew Self;
   typedef Application Superclass;
   typedef itk::SmartPointer<Self> Pointer;
   typedef itk::SmartPointer<const Self> ConstPointer;
@@ -105,7 +105,7 @@ public:
   /** Standard macro */
   itkNewMacro(Self)
 
-  itkTypeMacro(TrainImagesClassifier, otb::Application)
+  itkTypeMacro(TrainImagesClassifierNew, otb::Application)
 
   typedef FloatVectorImageType::PixelType         PixelType;
   typedef FloatVectorImageType::InternalPixelType InternalPixelType;
@@ -163,7 +163,7 @@ public:
 
 protected:
   using Superclass::AddParameter;
-  friend void InitSVMParams(TrainImagesClassifier & app);
+  friend void InitSVMParams(TrainImagesClassifierNew & app);
 
 private:
   void DoInit();

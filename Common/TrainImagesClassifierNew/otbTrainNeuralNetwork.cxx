@@ -38,7 +38,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_OPENCV
-void TrainImagesClassifier::InitNeuralNetworkParams()
+void TrainImagesClassifierNew::InitNeuralNetworkParams()
 {
   AddChoice("classifier.ann", "Artificial Neural Network classifier");
   SetParameterDescription("classifier.ann",
@@ -134,7 +134,7 @@ void TrainImagesClassifier::InitNeuralNetworkParams()
 
 }
 
-void TrainImagesClassifier::TrainNeuralNetwork(ListSampleType::Pointer trainingListSample,
+void TrainImagesClassifierNew::TrainNeuralNetwork(ListSampleType::Pointer trainingListSample,
                                                               LabelListSampleType::Pointer trainingLabeledListSample)
 {
   NeuralNetworkType::Pointer classifier = NeuralNetworkType::New();

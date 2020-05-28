@@ -37,7 +37,7 @@ namespace otb
 namespace Wrapper
 {
 
-void TrainImagesClassifier::DoInit()
+void TrainImagesClassifierNew::DoInit()
 {
     SetName("TrainImagesClassifierNew");
     SetDescription(
@@ -165,13 +165,13 @@ void TrainImagesClassifier::DoInit()
     SetDocExampleParameterValue("io.confmatout", "svmConfusionMatrixQB1.csv");
 }
 
-void TrainImagesClassifier::DoUpdateParameters()
+void TrainImagesClassifierNew::DoUpdateParameters()
 {
     // Nothing to do here : all parameters are independent
 }
 
 
-void TrainImagesClassifier::LogConfusionMatrix(ConfusionMatrixCalculatorType* confMatCalc)
+void TrainImagesClassifierNew::LogConfusionMatrix(ConfusionMatrixCalculatorType* confMatCalc)
 {
     ConfusionMatrixCalculatorType::ConfusionMatrixType matrix = confMatCalc->GetConfusionMatrix();
 
@@ -242,7 +242,7 @@ void TrainImagesClassifier::LogConfusionMatrix(ConfusionMatrixCalculatorType* co
     otbAppLogINFO("Confusion matrix (rows = reference labels, columns = produced labels):\n" << os.str());
 }
 
-void TrainImagesClassifier::Classify(ListSampleType::Pointer validationListSample, LabelListSampleType::Pointer predictedList)
+void TrainImagesClassifierNew::Classify(ListSampleType::Pointer validationListSample, LabelListSampleType::Pointer predictedList)
 {
     //Classification
     ModelPointerType model = MachineLearningModelFactoryType::CreateMachineLearningModel(GetParameterString("io.out"),
@@ -259,7 +259,7 @@ void TrainImagesClassifier::Classify(ListSampleType::Pointer validationListSampl
     model->PredictAll();
 }
 
-void TrainImagesClassifier::DoExecute()
+void TrainImagesClassifierNew::DoExecute()
 {
     GetLogger()->Debug("Entering DoExecute\n");
     //Create training and validation for list samples and label list samples
@@ -852,4 +852,4 @@ void TrainImagesClassifier::DoExecute()
 }
 }
 
-OTB_APPLICATION_EXPORT(otb::Wrapper::TrainImagesClassifier)
+OTB_APPLICATION_EXPORT(otb::Wrapper::TrainImagesClassifierNew)

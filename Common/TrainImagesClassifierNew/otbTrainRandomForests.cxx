@@ -37,7 +37,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_OPENCV
-void TrainImagesClassifier::InitRandomForestsParams()
+void TrainImagesClassifierNew::InitRandomForestsParams()
 {
   AddChoice("classifier.rf", "Random forests classifier");
   SetParameterDescription("classifier.rf",
@@ -110,7 +110,7 @@ void TrainImagesClassifier::InitRandomForestsParams()
   //TerminationCriteria not exposed
 }
 
-void TrainImagesClassifier::TrainRandomForests(ListSampleType::Pointer trainingListSample,
+void TrainImagesClassifierNew::TrainRandomForests(ListSampleType::Pointer trainingListSample,
                                                               LabelListSampleType::Pointer trainingLabeledListSample)
 {
   RandomForestType::Pointer classifier = RandomForestType::New();

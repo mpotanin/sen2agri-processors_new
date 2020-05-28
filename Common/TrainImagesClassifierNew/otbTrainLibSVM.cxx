@@ -38,7 +38,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_LIBSVM
-  void TrainImagesClassifier::InitLibSVMParams()
+  void TrainImagesClassifierNew::InitLibSVMParams()
   {
     AddChoice("classifier.libsvm", "LibSVM classifier");
     SetParameterDescription("classifier.libsvm", "This group of parameters allows to set SVM classifier parameters.");
@@ -60,7 +60,7 @@ namespace Wrapper
   }
 
 
-  void TrainImagesClassifier::TrainLibSVM(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
+  void TrainImagesClassifierNew::TrainLibSVM(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
   {
     LibSVMType::Pointer libSVMClassifier = LibSVMType::New();
     libSVMClassifier->SetInputListSample(trainingListSample);

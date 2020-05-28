@@ -38,7 +38,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_OPENCV
-  void TrainImagesClassifier::InitBoostParams()
+  void TrainImagesClassifierNew::InitBoostParams()
   {
     AddChoice("classifier.boost", "Boost classifier");
     SetParameterDescription("classifier.boost", "This group of parameters allows to set Boost classifier parameters. "
@@ -71,7 +71,7 @@ namespace Wrapper
   }
 
 
-  void TrainImagesClassifier::TrainBoost(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
+  void TrainImagesClassifierNew::TrainBoost(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
   {
     BoostType::Pointer boostClassifier = BoostType::New();
     boostClassifier->SetInputListSample(trainingListSample);

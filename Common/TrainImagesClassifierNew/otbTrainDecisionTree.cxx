@@ -37,7 +37,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_OPENCV
-void TrainImagesClassifier::InitDecisionTreeParams()
+void TrainImagesClassifierNew::InitDecisionTreeParams()
 {
   AddChoice("classifier.dt", "Decision Tree classifier");
   SetParameterDescription("classifier.dt",
@@ -96,7 +96,7 @@ void TrainImagesClassifier::InitDecisionTreeParams()
 
 }
 
-void TrainImagesClassifier::TrainDecisionTree(ListSampleType::Pointer trainingListSample,
+void TrainImagesClassifierNew::TrainDecisionTree(ListSampleType::Pointer trainingListSample,
                                                              LabelListSampleType::Pointer trainingLabeledListSample)
 {
   DecisionTreeType::Pointer classifier = DecisionTreeType::New();

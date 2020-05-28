@@ -38,7 +38,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_OPENCV
-  void TrainImagesClassifier::InitSVMParams()
+  void TrainImagesClassifierNew::InitSVMParams()
   {
     AddChoice("classifier.svm", "SVM classifier (OpenCV)");
     SetParameterDescription("classifier.svm", "This group of parameters allows to set SVM classifier parameters. "
@@ -91,7 +91,7 @@ namespace Wrapper
                             "because the samples are not identically processed within OpenCV.");
   }
 
-  void TrainImagesClassifier::TrainSVM(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
+  void TrainImagesClassifierNew::TrainSVM(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
   {
     SVMType::Pointer SVMClassifier = SVMType::New();
     SVMClassifier->SetInputListSample(trainingListSample);

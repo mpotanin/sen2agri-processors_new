@@ -38,7 +38,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_OPENCV
-  void TrainImagesClassifier::InitKNNParams()
+  void TrainImagesClassifierNew::InitKNNParams()
   {
     AddChoice("classifier.knn", "KNN classifier");
     SetParameterDescription("classifier.knn", "This group of parameters allows to set KNN classifier parameters. "
@@ -52,7 +52,7 @@ namespace Wrapper
   }
 
 
-  void TrainImagesClassifier::TrainKNN(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
+  void TrainImagesClassifierNew::TrainKNN(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
   {
     KNNType::Pointer knnClassifier = KNNType::New();
     knnClassifier->SetInputListSample(trainingListSample);

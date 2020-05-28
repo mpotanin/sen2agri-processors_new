@@ -38,7 +38,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_OPENCV
-  void TrainImagesClassifier::InitNormalBayesParams()
+  void TrainImagesClassifierNew::InitNormalBayesParams()
   {
     AddChoice("classifier.bayes", "Normal Bayes classifier");
     SetParameterDescription("classifier.bayes", "Use a Normal Bayes Classifier. "
@@ -47,7 +47,7 @@ namespace Wrapper
   }
 
 
-  void TrainImagesClassifier::TrainNormalBayes(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
+  void TrainImagesClassifierNew::TrainNormalBayes(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
   {
     NormalBayesType::Pointer classifier = NormalBayesType::New();
     classifier->SetInputListSample(trainingListSample);

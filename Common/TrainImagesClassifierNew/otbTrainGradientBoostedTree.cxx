@@ -37,7 +37,7 @@ namespace otb
 namespace Wrapper
 {
 #ifdef OTB_USE_OPENCV
-void TrainImagesClassifier::InitGradientBoostedTreeParams()
+void TrainImagesClassifierNew::InitGradientBoostedTreeParams()
 {
   AddChoice("classifier.gbt", "Gradient Boosted Tree classifier");
   SetParameterDescription(
@@ -82,7 +82,7 @@ void TrainImagesClassifier::InitGradientBoostedTreeParams()
 
 }
 
-void TrainImagesClassifier::TrainGradientBoostedTree(
+void TrainImagesClassifierNew::TrainGradientBoostedTree(
     ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample)
 {
   GradientBoostedTreeType::Pointer classifier = GradientBoostedTreeType::New();
