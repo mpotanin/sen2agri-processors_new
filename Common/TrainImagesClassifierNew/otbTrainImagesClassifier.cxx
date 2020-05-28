@@ -255,8 +255,10 @@ void TrainImagesClassifierNew::Classify(ListSampleType::Pointer validationListSa
 
     model->Load(GetParameterString("io.out"));
     model->SetInputListSample(validationListSample);
+    //model->SetTargetListSample(predictedList);
+    //model->PredictAll();
+    predictedList = model->PredictBatch(validationListSample);
     model->SetTargetListSample(predictedList);
-    model->PredictAll();
 }
 
 void TrainImagesClassifierNew::DoExecute()
