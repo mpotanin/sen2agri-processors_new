@@ -985,7 +985,8 @@ private:
           return extent;
       }
 
-      auto targetSRS = static_cast<OGRSpatialReference *>(OSRNewSpatialReference(SRS_WKT_WGS84));
+      //auto targetSRS = static_cast<OGRSpatialReference *>(OSRNewSpatialReference(SRS_WKT_WGS84));
+      auto targetSRS = static_cast<OGRSpatialReference*>(OSRNewSpatialReference(SRS_WKT_WGS84_LAT_LONG));
       if (!targetSRS) {
           return extent;
       }
@@ -1872,13 +1873,25 @@ private:
           if (boost::filesystem::is_directory(filePath)) {
               for(const boost::filesystem::directory_entry& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(filePath), {})) {
                 //std::cout << entry.path(). << "\n";
-                std::string fileName = entry.path().filename().c_str();
-                CopyFile(m_strDestRoot + "/" + m_strProductDirectoryName + "/" + VECTOR_FOLDER_NAME + "/" + fileName, entry.path().string());
+//                std::string fileName = entry.path().filename().c_str();
+#if defined(WIN32) || defined(_WIN32) || defined(_WINDOWS)
+                  std::string fileName = _wstrToUtf8__(entry.path().filename().c_str());
+#else
+                  std::string fileName = entry.path().filename().c_str();
+#endif
+
+                  CopyFile(m_strDestRoot + "/" + m_strProductDirectoryName + "/" + VECTOR_FOLDER_NAME + "/" + fileName, entry.path().string());
 
               }
           } else {
-              std::string fileName = filePath.filename().c_str();
-              CopyFile(m_strDestRoot + "/" + m_strProductDirectoryName + "/" + VECTOR_FOLDER_NAME + "/" + fileName, file);
+//              std::string fileName = filePath.filename().c_str();
+//              CopyFile(m_strDestRoot + "/" + m_strProductDirectoryName + "/" + VECTOR_FOLDER_NAME + "/" + fileName, file);
+#if defined(WIN32) || defined(_WIN32) || defined(_WINDOWS)
+//              std::string fileName = _wstrToUtf8__(entry.path().filename().c_str());
+#else
+ //             std::string fileName = entry.path().filename().c_str();
+#endif
+ //
           }
       }
   }
