@@ -256,13 +256,14 @@ private:
   //  Software Guide :BeginCodeSnippet
   void DoExecute()
   {
-      // Get the list of input files
+       // Get the list of input files
       const std::vector<std::string> &descriptors = this->GetParameterStringList("il");
       if( descriptors.size()== 0 )
         {
         itkExceptionMacro("No input file set...");
         }
 
+      
       // get the required pixel size
       auto pixSize = this->GetParameterFloat("pixsize");
       // get the main mission
@@ -271,13 +272,10 @@ private:
           mission = this->GetParameterString("mission");
       }
 
+      
       //auto bm = GetParameterEmpty("bm");
       //substitute for GetParameterEmpty("bm")
-      if (IsParameterEnabled("bm"))
-      {
-          //std::cout << "BM: " << GetParameterAsString("bm") << std::endl;
-          m_Preprocessor->SetBM(GetParameterAsString("bm") == "true");
-      }
+      
       auto window = GetParameterInt("window");
 
       TileData td;
@@ -295,6 +293,12 @@ private:
       }
 
       //m_Preprocessor->SetBM(bm);
+      if (IsParameterEnabled("bm"))
+      {
+          //std::cout << "BM: " << GetParameterAsString("bm") << std::endl;
+          m_Preprocessor->SetBM(GetParameterAsString("bm") == "true");
+      }
+
       m_Preprocessor->SetW(window);
       m_Preprocessor->SetDelta(0.05f);
       m_Preprocessor->SetTSoil(0.2f);
