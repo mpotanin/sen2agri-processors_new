@@ -28,14 +28,15 @@
  #include "../src/MACCSS2MetadataHelper.h"
  #include "../src/MACCSL8MetadataHelper.h"
  */
-
+/*
 #if (defined(WIN32) || defined(_WIN32))
 #  define METADATA_HELPER_FACTORY_EXPORT __declspec(dllexport)
 #else
 #  define METADATA_HELPER_FACTORY_EXPORT
 #endif
-
-class METADATA_HELPER_FACTORY_EXPORT MetadataHelperFactory : public itk::LightObject
+*/
+//class METADATA_HELPER_FACTORY_EXPORT MetadataHelperFactory : public itk::LightObject
+class MetadataHelperFactory : public itk::LightObject
 {
 public:
     typedef MetadataHelperFactory Self;
@@ -45,9 +46,9 @@ public:
 
     itkNewMacro(Self)
 
-        itkTypeMacro(MetadataHelperFactory, itk::LightObject)
+    itkTypeMacro(MetadataHelperFactory, itk::LightObject)
 
-        template <typename PixelType, typename MasksPixelType = short>
+    template <typename PixelType, typename MasksPixelType = short>
     std::unique_ptr<MetadataHelper<PixelType, MasksPixelType>> GetMetadataHelper(const std::string& metadataFileName);
     /*    {
            std::unique_ptr<MetadataHelper<PixelType, MasksPixelType>> spot4MetadataHelper(new Spot4MetadataHelper<PixelType, MasksPixelType>);

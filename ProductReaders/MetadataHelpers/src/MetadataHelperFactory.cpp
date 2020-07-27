@@ -20,8 +20,11 @@
 #include "MACCSL8MetadataHelper.h"
 #include "SEN2CORMetadataHelper.h"
 
+
+
 template <typename PixelType, typename MasksPixelType>
-std::unique_ptr<MetadataHelper<PixelType, MasksPixelType>> METADATA_HELPER_FACTORY_EXPORT MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName)
+//std::unique_ptr<MetadataHelper<PixelType, MasksPixelType>> METADATA_HELPER_FACTORY_EXPORT MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName)
+std::unique_ptr<MetadataHelper<PixelType, MasksPixelType>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName)
 {
     // std::cout << "Getting metadata helper" << std::endl;
 
@@ -51,32 +54,33 @@ std::unique_ptr<MetadataHelper<PixelType, MasksPixelType>> METADATA_HELPER_FACTO
 }
 
 template
-std::unique_ptr<MetadataHelper<short, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<short, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 template
-std::unique_ptr<MetadataHelper<unsigned short, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<unsigned short, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 template
-std::unique_ptr<MetadataHelper<short, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<short, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 template
-std::unique_ptr<MetadataHelper<unsigned short, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<unsigned short, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 template
-std::unique_ptr<MetadataHelper<float, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<float, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 template
-std::unique_ptr<MetadataHelper<float, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<float, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 
 template
-std::unique_ptr<MetadataHelper<int, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<int, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 template
-std::unique_ptr<MetadataHelper<unsigned int, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<unsigned int, short>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 template
-std::unique_ptr<MetadataHelper<int, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<int, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
 
 template
-std::unique_ptr<MetadataHelper<unsigned int, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+    std::unique_ptr<MetadataHelper<unsigned int, uint8_t>> MetadataHelperFactory::GetMetadataHelper(const std::string& metadataFileName);
+
