@@ -30,14 +30,14 @@ MAJAMetadataHelper<PixelType, MasksPixelType>::MAJAMetadataHelper()
 }
 
 template <typename PixelType, typename MasksPixelType>
-typename MetadataHelper<PixelType, MasksPixelType>::VectorImageType::Pointer MAJAMetadataHelper<PixelType, MasksPixelType>::GetImage(const std::vector<std::string> &bandNames, int outRes)
+typename MetadataHelper<PixelType, MasksPixelType>::VectorImageType::Pointer MAJAMetadataHelper<PixelType, MasksPixelType>::GetImage(const std::vector<std::string>& bandNames, int outRes)
 {
     return GetImage(bandNames, NULL, outRes);
 }
 
 template <typename PixelType, typename MasksPixelType>
-typename MetadataHelper<PixelType, MasksPixelType>::VectorImageType::Pointer MAJAMetadataHelper<PixelType, MasksPixelType>::GetImage(const std::vector<std::string> &bandNames,
-                                                                                 std::vector<int> *pRetRelBandIdxs, int outRes)
+typename MetadataHelper<PixelType, MasksPixelType>::VectorImageType::Pointer MAJAMetadataHelper<PixelType, MasksPixelType>::GetImage(const std::vector<std::string>& bandNames,
+    std::vector<int>* pRetRelBandIdxs, int outRes)
 {
     std::vector<std::string> validBandNames;
     std::vector<int> retBandIdxs(bandNames.size());
@@ -57,19 +57,19 @@ typename MetadataHelper<PixelType, MasksPixelType>::VectorImageType::Pointer MAJ
         if (outRes == curRes) {
             return reader->GetOutput();
         }
-        float fMultiplicationFactor = ((float)curRes)/outRes;
+        float fMultiplicationFactor = ((float)curRes) / outRes;
         return this->m_ImageResampler.getResampler(reader->GetOutput(), fMultiplicationFactor)->GetOutput();
     }
 
     // if we have several bands
     typename MetadataHelper<PixelType, MasksPixelType>::ImageListType::Pointer imageList = this->CreateImageList();
-    for (const std::string &bandName: validBandNames) {
+    for (const std::string& bandName : validBandNames) {
         typename MetadataHelper<PixelType, MasksPixelType>::ImageReaderType::Pointer reader = this->CreateReader(GetImageFileName(bandName));
         typename MetadataHelper<PixelType, MasksPixelType>::VectorImageType::Pointer img = reader->GetOutput();
         img->UpdateOutputInformation();
         int curRes = img->GetSpacing()[0];
         // for MAJA we have only one band per reflectance raster
-        this->m_bandsExtractor.ExtractImageBands(img, imageList, {0}, Interpolator_NNeighbor, curRes, outRes);
+        this->m_bandsExtractor.ExtractImageBands(img, imageList, { 0 }, Interpolator_NNeighbor, curRes, outRes);
     }
 
     imageList->UpdateOutputInformation();
@@ -80,9 +80,9 @@ typename MetadataHelper<PixelType, MasksPixelType>::VectorImageType::Pointer MAJ
 }
 
 template <typename PixelType, typename MasksPixelType>
-typename MetadataHelper<PixelType, MasksPixelType>::ImageListType::Pointer MAJAMetadataHelper<PixelType, MasksPixelType>::GetImageList(const std::vector<std::string> &bandNames,
-                                                                           typename MetadataHelper<PixelType, MasksPixelType>::ImageListType::Pointer outImgList,
-                                                                           int outRes)
+typename MetadataHelper<PixelType, MasksPixelType>::ImageListType::Pointer MAJAMetadataHelper<PixelType, MasksPixelType>::GetImageList(const std::vector<std::string>& bandNames,
+    typename MetadataHelper<PixelType, MasksPixelType>::ImageListType::Pointer outImgList,
+    int outRes)
 {
     std::vector<std::string> validBandNames;
     std::vector<int> retBandIdxs(bandNames.size());
@@ -94,13 +94,13 @@ typename MetadataHelper<PixelType, MasksPixelType>::ImageListType::Pointer MAJAM
     }
 
     // if we have several bands
-    for (const std::string &bandName: validBandNames) {
-        typename MACCSMetadataHelperBase<PixelType, MasksPixelType>::ImageReaderType::Pointer reader = this->CreateReader(GetImageFileName(bandName));
-        typename MACCSMetadataHelperBase<PixelType, MasksPixelType>::VectorImageType::Pointer img = reader->GetOutput();
+    for (const std::string& bandName : validBandNames) {
+        typename MetadataHelper<PixelType, MasksPixelType>::ImageReaderType::Pointer reader = this->CreateReader(GetImageFileName(bandName));
+        typename MetadataHelper<PixelType, MasksPixelType>::VectorImageType::Pointer img = reader->GetOutput();
         img->UpdateOutputInformation();
         int curRes = img->GetSpacing()[0];
         // for MAJA we have only one band per reflectance raster
-        this->m_bandsExtractor.ExtractImageBands(img, imageList, {0}, Interpolator_NNeighbor, curRes, outRes);
+        this->m_bandsExtractor.ExtractImageBands(img, imageList, { 0 }, Interpolator_NNeighbor, curRes, outRes);
     }
 
     imageList->UpdateOutputInformation();
@@ -108,7 +108,7 @@ typename MetadataHelper<PixelType, MasksPixelType>::ImageListType::Pointer MAJAM
 }
 
 template <typename PixelType, typename MasksPixelType>
-bool MAJAMetadataHelper<PixelType, MasksPixelType>::LoadAndCheckMetadata(const std::string &file)
+bool MAJAMetadataHelper<PixelType, MasksPixelType>::LoadAndCheckMetadata(const std::string& file)
 {
     MAJAMetadataReaderType::Pointer majaMetadataReader = MAJAMetadataReaderType::New();
     // just check if the file is MACCS metadata file. In this case
@@ -116,7 +116,7 @@ bool MAJAMetadataHelper<PixelType, MasksPixelType>::LoadAndCheckMetadata(const s
     // present in the metadata
     if (this->m_metadata = majaMetadataReader->ReadMetadata(file)) {
         if (this->m_metadata->Header.FixedHeader.Mission.find(SENTINEL_MISSION_STR) != std::string::npos &&
-                this->m_metadata->Header.FixedHeader.SourceSystem == "MUSCATE") {
+            this->m_metadata->Header.FixedHeader.SourceSystem == "MUSCATE") {
 
             this->m_AotQuantifVal = std::stod(this->m_metadata->ImageInformation.AOTQuantificationValue);
             this->m_AotNoDataVal = std::stod(this->m_metadata->ImageInformation.AOTNoDataValue);
@@ -130,10 +130,11 @@ bool MAJAMetadataHelper<PixelType, MasksPixelType>::LoadAndCheckMetadata(const s
 template <typename PixelType, typename MasksPixelType>
 std::string MAJAMetadataHelper<PixelType, MasksPixelType>::GetAotImageFileName(int res)
 {
-    if(res != 20) {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.ImageFiles, "_ATB_R1");
-    } else {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.ImageFiles, "_ATB_R2");
+    if (res != 20) {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.ImageFiles, "_ATB_R1");
+    }
+    else {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.ImageFiles, "_ATB_R2");
     }
 }
 
@@ -157,12 +158,12 @@ int MAJAMetadataHelper<PixelType, MasksPixelType>::GetAotBandIndex(int)
 }
 
 template <typename PixelType, typename MasksPixelType>
-std::string MAJAMetadataHelper<PixelType, MasksPixelType>::GetImageFileName(const std::string &bandName) {
-    return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.ImageFiles, "_FRE_" + bandName);
+std::string MAJAMetadataHelper<PixelType, MasksPixelType>::GetImageFileName(const std::string& bandName) {
+    return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.ImageFiles, "_FRE_" + bandName);
 }
 
 template <typename PixelType, typename MasksPixelType>
-bool MAJAMetadataHelper<PixelType, MasksPixelType>::HasBandName(const std::vector<std::string> &bandNames, const std::string &bandName) {
+bool MAJAMetadataHelper<PixelType, MasksPixelType>::HasBandName(const std::vector<std::string>& bandNames, const std::string& bandName) {
     if (std::find(bandNames.begin(), bandNames.end(), bandName) != bandNames.end()) {
         return true;
     }
@@ -170,8 +171,8 @@ bool MAJAMetadataHelper<PixelType, MasksPixelType>::HasBandName(const std::vecto
 }
 
 template <typename PixelType, typename MasksPixelType>
-bool MAJAMetadataHelper<PixelType, MasksPixelType>::GetValidBandNames(const std::vector<std::string> &bandNames, std::vector<std::string> &validBandNames,
-                       std::vector<int> &relBandIndexes, int &outRes)
+bool MAJAMetadataHelper<PixelType, MasksPixelType>::GetValidBandNames(const std::vector<std::string>& bandNames, std::vector<std::string>& validBandNames,
+    std::vector<int>& relBandIndexes, int& outRes)
 {
     relBandIndexes.resize(bandNames.size());
     std::fill(relBandIndexes.begin(), relBandIndexes.end(), -1);
@@ -179,7 +180,7 @@ bool MAJAMetadataHelper<PixelType, MasksPixelType>::GetValidBandNames(const std:
     int i = 0;
     std::map<int, int> resolutions;
     bool bHasBandName;
-    for(const std::string &bandName: bandNames) {
+    for (const std::string& bandName : bandNames) {
         bHasBandName = false;
         if (this->HasBandName(this->GetBandNamesForResolution(10), bandName)) {
             resolutions[10] = 10;
@@ -204,7 +205,8 @@ bool MAJAMetadataHelper<PixelType, MasksPixelType>::GetValidBandNames(const std:
     if (outRes == -1) {
         if (resolutions.size() == 1) {
             outRes = resolutions.begin()->first;
-        } else {
+        }
+        else {
             outRes = 10;
         }
     }
@@ -212,12 +214,12 @@ bool MAJAMetadataHelper<PixelType, MasksPixelType>::GetValidBandNames(const std:
 }
 
 template <typename PixelType, typename MasksPixelType>
-bool MAJAMetadataHelper<PixelType, MasksPixelType>::BandAvailableForResolution(const std::string &bandName, int nRes) {
+bool MAJAMetadataHelper<PixelType, MasksPixelType>::BandAvailableForResolution(const std::string& bandName, int nRes) {
     // Sentinel 2
-    for(const CommonBandResolution& bandResolution : this->m_metadata->ProductInformation.BandResolutions) {
+    for (const CommonBandResolution& bandResolution : this->m_metadata->ProductInformation.BandResolutions) {
         if (bandResolution.BandName == bandName) {
             int nBandRes = std::atoi(bandResolution.Resolution.c_str());
-            if(nBandRes == nRes) {
+            if (nBandRes == nRes) {
                 return true;
             }
         }
@@ -228,10 +230,11 @@ bool MAJAMetadataHelper<PixelType, MasksPixelType>::BandAvailableForResolution(c
 template <typename PixelType, typename MasksPixelType>
 std::string MAJAMetadataHelper<PixelType, MasksPixelType>::getCloudFileName(int res)
 {
-    if(res != 20) {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_CLM_R1");
-    } else {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_CLM_R2");
+    if (res != 20) {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_CLM_R1");
+    }
+    else {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_CLM_R2");
     }
 }
 
@@ -244,20 +247,22 @@ std::string MAJAMetadataHelper<PixelType, MasksPixelType>::getWaterFileName(int 
 template <typename PixelType, typename MasksPixelType>
 std::string MAJAMetadataHelper<PixelType, MasksPixelType>::getSaturationFileName(int res)
 {
-    if(res != 20) {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_SAT_R1");
-    } else {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_SAT_R2");
+    if (res != 20) {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_SAT_R1");
+    }
+    else {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_SAT_R2");
     }
 }
 
 template <typename PixelType, typename MasksPixelType>
 std::string MAJAMetadataHelper<PixelType, MasksPixelType>::getEdgeFileName(int res)
 {
-    if(res != 20) {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_EDG_R1");
-    } else {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_EDG_R2");
+    if (res != 20) {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_EDG_R1");
+    }
+    else {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_EDG_R2");
     }
 }
 
@@ -271,30 +276,31 @@ std::string MAJAMetadataHelper<PixelType, MasksPixelType>::getSnowFileName(int r
 template <typename PixelType, typename MasksPixelType>
 std::string MAJAMetadataHelper<PixelType, MasksPixelType>::getQualityFileName(int res)
 {
-    if(res != 20) {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_MG2_R1");
-    } else {
-        return this->getMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_MG2_R2");
+    if (res != 20) {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_MG2_R1");
+    }
+    else {
+        return this->GetMACCSImageFileName(this->m_metadata->ProductOrganization.AnnexFiles, "_MG2_R2");
     }
 }
 
 
 template <typename PixelType, typename MasksPixelType>
 typename MetadataHelper<PixelType, MasksPixelType>::SingleBandMasksImageType::Pointer
-         MAJAMetadataHelper<PixelType, MasksPixelType>::GetMasksImage(MasksFlagType nMaskFlags, bool binarizeResult, int resolution) {
+MAJAMetadataHelper<PixelType, MasksPixelType>::GetMasksImage(MasksFlagType nMaskFlags, bool binarizeResult, int resolution) {
     // We use:
     //  - MG2 for CloudsMask, WaterMask, SnowMask
     //  - EDG ofor edge masks
     //  - SAT for saturation masks
     std::vector< typename MetadataHelper<PixelType, MasksPixelType>::SingleBandMasksImageType::Pointer> vecImgs;
-    if((nMaskFlags & MSK_CLOUD) != 0 || (nMaskFlags & MSK_SNOW) != 0 || (nMaskFlags & MSK_WATER) != 0) {
+    if ((nMaskFlags & MSK_CLOUD) != 0 || (nMaskFlags & MSK_SNOW) != 0 || (nMaskFlags & MSK_WATER) != 0) {
         vecImgs.push_back(this->m_maskFlagsBandsExtractor.ExtractResampledBand(getQualityFileName(resolution), 1, Interpolator_NNeighbor));
     }
 
-    if((nMaskFlags & MSK_SAT) != 0) {
+    if ((nMaskFlags & MSK_SAT) != 0) {
         vecImgs.push_back(this->m_maskFlagsBandsExtractor.ExtractResampledBand(getSaturationFileName(resolution), 1, Interpolator_NNeighbor));
     }
-    if((nMaskFlags & MSK_VALID) != 0) {
+    if ((nMaskFlags & MSK_VALID) != 0) {
         vecImgs.push_back(this->m_maskFlagsBandsExtractor.ExtractResampledBand(getEdgeFileName(resolution), 1, Interpolator_NNeighbor));
     }
 
@@ -302,14 +308,15 @@ typename MetadataHelper<PixelType, MasksPixelType>::SingleBandMasksImageType::Po
     if (vecImgs.size() > 1) {
         this->m_majaNMaskHandlerFilter = MAJANaryFunctorImageFilterType::New();
         this->m_majaNMaskHandlerFilter->SetFunctor(this->m_majaMaskHandlerFunctor);
-        for(size_t i = 0; i<vecImgs.size(); i++) {
+        for (size_t i = 0; i < vecImgs.size(); i++) {
             this->m_majaNMaskHandlerFilter->SetInput(i, vecImgs[i]);
         }
         return this->m_majaNMaskHandlerFilter->GetOutput();
-    } else {
+    }
+    else {
         this->m_majaSingleMaskHandlerFilter = MAJAUnaryFunctorImageFilterType::New();
         this->m_majaSingleMaskHandlerFilter->SetFunctor(this->m_majaMaskHandlerFunctor);
-            this->m_majaSingleMaskHandlerFilter->SetInput(vecImgs[0]);
+        this->m_majaSingleMaskHandlerFilter->SetInput(vecImgs[0]);
         return this->m_majaSingleMaskHandlerFilter->GetOutput();
     }
 }
