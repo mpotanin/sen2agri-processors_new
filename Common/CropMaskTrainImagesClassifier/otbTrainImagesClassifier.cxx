@@ -301,7 +301,10 @@ void CropMaskTrainImagesClassifier::DoExecute()
       preprocessor->SetTSoil(0.2f);
 
       // compute the desired size of the processed rasters
+
+
       preprocessor->updateRequiredImageSize(descriptors, startIndex, endIndex, td);
+
       preprocessor->Build(descriptors.begin() + startIndex, descriptors.begin() + endIndex, td);
 
     startIndex = endIndex;
@@ -344,8 +347,8 @@ void CropMaskTrainImagesClassifier::DoExecute()
       "classifier.ann.rdwm",
       "classifier.boost.r",
       "classifier.dt.ra",
-      "classifier.gbt.p",
-      "classifier.gbt.s",
+      //"classifier.gbt.p",
+      //"classifier.gbt.s",
       "classifier.libsvm.c",
       "classifier.rf.acc",
       "classifier.rf.ra",
@@ -365,8 +368,8 @@ void CropMaskTrainImagesClassifier::DoExecute()
       "classifier.dt.f",
       "classifier.dt.max",
       "classifier.dt.min",
-      "classifier.gbt.max",
-      "classifier.gbt.w",
+      //"classifier.gbt.max",
+      //"classifier.gbt.w",
       "classifier.knn.k",
       "classifier.rf.cat",
       "classifier.rf.max",
@@ -397,6 +400,8 @@ void CropMaskTrainImagesClassifier::DoExecute()
       "sample.vfn"
   };
 
+
+  
   for (const auto &key : booleanParams) {
       if (HasValue(key)) {
           app->EnableParameter(key);
@@ -404,12 +409,18 @@ void CropMaskTrainImagesClassifier::DoExecute()
       }
   }
 
+
   for (const auto &key : floatParams) {
       if (HasValue(key)) {
+
+          //debug
+          std::cout << key << std::endl;
+          //end-debug
           app->EnableParameter(key);
           app->SetParameterFloat(key, GetParameterFloat(key));
       }
   }
+
 
   for (const auto &key : intParams) {
       if (HasValue(key)) {
@@ -418,12 +429,16 @@ void CropMaskTrainImagesClassifier::DoExecute()
       }
   }
 
+
+
   for (const auto &key : stringParams) {
       if (HasValue(key)) {
           app->EnableParameter(key);
           app->SetParameterString(key, GetParameterString(key));
       }
   }
+
+
 
   if (HasValue("io.vd")) {
       app->EnableParameter("io.vd");
@@ -441,6 +456,7 @@ void CropMaskTrainImagesClassifier::DoExecute()
   for (const auto &img : images) {
       imageList->AddImage(img);
   }
+
   app->UpdateParameters();
 
   otbAppLogINFO("Training the classifier");
