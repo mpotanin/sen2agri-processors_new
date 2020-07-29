@@ -220,6 +220,8 @@ int BandsMappingConfig::GetIndexInPresenceArray(int nRes, const std::string &mis
 }
 
 bool BandsMappingConfig::IsMatchingMission(const std::string &missionName, const std::string &missionRegex) const {
+    return true;
+/*
     if (missionName == missionRegex) {
         return true;
     }
@@ -231,6 +233,7 @@ bool BandsMappingConfig::IsMatchingMission(const std::string &missionName, const
                           ". The exception was \"" << e.what() << "\"";
         throw e;
     }
+*/
 }
 
 /********************************************************************
