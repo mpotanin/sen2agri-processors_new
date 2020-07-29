@@ -412,10 +412,6 @@ void CropMaskTrainImagesClassifier::DoExecute()
 
   for (const auto &key : floatParams) {
       if (HasValue(key)) {
-
-          //debug
-          std::cout << key << std::endl;
-          //end-debug
           app->EnableParameter(key);
           app->SetParameterFloat(key, GetParameterFloat(key));
       }
