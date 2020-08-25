@@ -157,25 +157,28 @@ def get_reference_raster(product):
 
     directory = os.path.dirname(product)
     if extension == ".xml":
-    #   files = glob.glob(os.path.join(directory, "*_FRE_B4.tif"))
-        directory = os.path.join(directory, "GRANULE")
-            # Check for Sen2Cor reference raster
-        for subdir in os.listdir(directory):
-            directory=os.path.join(directory, subdir)
-            if os.path.isdir(directory):
-                directory = os.path.join(directory, "IMG_DATA")
-                directory = os.path.join(directory, "R10m")
-                break
-        files = glob.glob(os.path.join(directory, "*_B04_10m.jp2"))
+        files = glob.glob(os.path.join(directory, "*_FRE_B4.tif"))
         if files:
             return files[0]
         else:
-            files = glob.glob(os.path.join(directory, "*PENTE*"))
+            directory = os.path.join(directory, "GRANULE")
+            # Check for Sen2Cor reference raster
+            for subdir in os.listdir(directory):
+                directory=os.path.join(directory, subdir)
+                if os.path.isdir(directory):
+                    directory = os.path.join(directory, "IMG_DATA")
+                    directory = os.path.join(directory, "R10m")
+                    break
+            files = glob.glob(os.path.join(directory, "*_B04_10m.jp2"))
             if files:
                 return files[0]
             else:
-                files = glob.glob(os.path.join(directory, "*"))
-                raise Exception("Unable to find a reference raster for MAJA or SPOT product", directory, files)
+                files = glob.glob(os.path.join(directory, "*PENTE*"))
+                if files:
+                    return files[0]
+                else:
+                    files = glob.glob(os.path.join(directory, "*"))
+                    raise Exception("Unable to find a reference raster for MAJA or SPOT product", directory, files)
     if extension == ".hdr":
         dir = os.path.join(directory, parts[0] + ".DBL.DIR")
         files = glob.glob(os.path.join(dir, "*_FRE_R1.DBL.TIF"))
