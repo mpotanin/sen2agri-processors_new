@@ -173,7 +173,11 @@ private:
     bool GetSen2CorImageFileName(const CommonFileInformation& fileInfo,
         const std::string& ending, std::string& retStr);
 
-    virtual std::string GetRasterFileExtension() { return ".jp2"; }
+    //virtual std::string GetRasterFileExtension() { return ".jp2"; }
+    //assume that sen2cor all rasters were converted into geotiff before processing
+    virtual std::string GetRasterFileExtension() {
+        return ".tif";
+    }
 
     bool CheckFileExistence(std::string& fileName);
     std::string GetGranuleXmlPath(const std::unique_ptr<MACCSFileMetadata>& metadata);
