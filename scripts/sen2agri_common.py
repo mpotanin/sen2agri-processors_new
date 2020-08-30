@@ -169,7 +169,9 @@ def get_reference_raster(product):
                     directory = os.path.join(directory, "IMG_DATA")
                     directory = os.path.join(directory, "R10m")
                     break
-            files = glob.glob(os.path.join(directory, "*_B04_10m.jp2"))
+            #files = glob.glob(os.path.join(directory, "*_B04_10m.jp2"))
+            #assume that sen2cor all rasters were converted into geotiff before processing
+            files = glob.glob(os.path.join(directory, "*_B04_10m.tif")) 
             if files:
                 return files[0]
             else:
