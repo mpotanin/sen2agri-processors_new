@@ -242,7 +242,7 @@ void TrainImagesClassifierNew::LogConfusionMatrix(ConfusionMatrixCalculatorType*
     otbAppLogINFO("Confusion matrix (rows = reference labels, columns = produced labels):\n" << os.str());
 }
 
-void TrainImagesClassifierNew::Classify(ListSampleType::Pointer validationListSample, LabelListSampleType::Pointer predictedList)
+void TrainImagesClassifierNew::Classify(ListSampleType::Pointer validationListSample, LabelListSampleType::Pointer &predictedList)
 {
     //Classification
     ModelPointerType model = MachineLearningModelFactoryType::CreateMachineLearningModel(GetParameterString("io.out"),
