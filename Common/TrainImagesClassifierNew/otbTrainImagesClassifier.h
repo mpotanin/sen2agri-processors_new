@@ -202,7 +202,7 @@ private:
   void TrainKNN(ListSampleType::Pointer trainingListSample, LabelListSampleType::Pointer trainingLabeledListSample);
 #endif
 
-  void Classify(ListSampleType::Pointer validationListSample, LabelListSampleType::Pointer predictedList);
+  void Classify(ListSampleType::Pointer validationListSample, LabelListSampleType::Pointer &predictedList);
 
   void DoExecute();
 };
