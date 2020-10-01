@@ -1,12 +1,16 @@
+# Takes as input folder with L2A products (downloaded from https://scihub.copernicus.eu).
+# Converts all raster data from Jpeg2000 format (.jp2) to GeoTIFF format (.tif). 
+# Data are stored near input or copied to an output destination folder
+
+
 import argparse
 import os
 import sys
 import re
 import shutil
 import time
-import datetime
-import array
 import subprocess
+
 
 def wait_for(max_proc, proc_in_work):
     while len(proc_in_work) == max_proc :
@@ -16,9 +20,15 @@ def wait_for(max_proc, proc_in_work):
                 return
         time.sleep(1)
     return
+    
                 
+example_text = '''example:
+    python convert2tiff.py -i /mnt/l2_data -sd 20190501 -ed 20191031 -t 39UVB,39VVC -proc 7 -o /mnt/l2_data_tiff'''
 
-parser = argparse.ArgumentParser(description='Converts rasters of L2A from jpeg2000 to GeoTiff')
+
+parser = argparse.ArgumentParser(description='Converts rasters of L2A from jpeg2000 to GeoTiff',
+                                epilog=example_text,
+                                formatter_class=argparse.RawDescriptionHelpFormatter)
 
 parser.add_argument('-i', required=True, metavar='input folder', help='Input folder with L2A products')
 parser.add_argument('-o', required=False, metavar='output folder', help='Output folder if specified all files are copied to')
@@ -29,6 +39,7 @@ parser.add_argument('-proc', required=False, type=int, metavar='processes num', 
 
 if (len(sys.argv)==1):
     parser.print_usage()
+ 
     exit(0)
 
 args = parser.parse_args()
@@ -50,7 +61,6 @@ for d in os.listdir(args.i):
         
                 
         print(d)
-        raster_count = 0
         for (dirpath, dirnames, filenames) in os.walk(os.path.join(args.i,d)):
             new_dirpath = dirpath if args.o is None else dirpath.replace(args.i,args.o)
             
@@ -61,20 +71,12 @@ for d in os.listdir(args.i):
             
             for f in filenames:
                 if f.endswith('.jp2') :
-                    raster_count+=1
                     wait_for(max_proc,proc_in_work)
                     command = ('gdal_translate -of GTiff ' + os.path.join(dirpath,f) + ' ' + 
                               os.path.join(new_dirpath,f).replace('.jp2','.tif'))
-                    #print (command)
                     proc_in_work.append(subprocess.Popen(command,shell=True,stdout=subprocess.DEVNULL))
                 elif args.o is not None: 
-                    shutil.copyfile(os.path.join(dirpath,f),
-                                    os.path.join(new_dirpath,f))
-        
-        if raster_count == 40 :
-            print ('DONE')
-        else:
-            print ('ERROR: found only ' + str(raster_count) + '/40' + ' rasters')
+                    shutil.copyfile(os.path.join(dirpath,f),os.path.join(new_dirpath,f))
                           
         
 
