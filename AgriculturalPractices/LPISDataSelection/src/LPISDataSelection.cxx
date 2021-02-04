@@ -16,17 +16,21 @@
 #include "otbWrapperApplication.h"
 #include "otbWrapperApplicationFactory.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/lexical_cast.hpp"
+#include "boost/algorithm/string.hpp"
 
 #include "string_utils.hpp"
 #include "otbOGRDataSourceWrapper.h"
 
 #include "CountryInfoFactory.h"
-#include "GSAAAttributesTablesReaderFactory.h"
+#include "../../Common/include/GSAAAttributesTablesReaderFactory.h"
 
 #include "CommonFunctions.h"
+
+#include "boost/uuid/uuid.hpp"            // uuid class
+#include "boost/uuid/uuid_generators.hpp" // generators
+#include "boost/uuid/uuid_io.hpp"         // streaming operators etc.
 
 namespace otb
 {
@@ -123,6 +127,10 @@ private:
         SetParameterDescription("hend", "he harvest end date");
         MandatoryOff("hend");
 
+        AddParameter(ParameterType_String, "hwinterend", "Harvest winter end");
+        SetParameterDescription("hwinterend", "The harvest winter end date (when applicable)");
+        MandatoryOff("hwinterend");
+
         AddParameter(ParameterType_String, "pstart", "Practice start");
         SetParameterDescription("pstart", "The practice start date");
         MandatoryOff("pstart");
@@ -156,6 +164,10 @@ private:
         SetParameterDescription("ignoredids","File containing the list of field ids that will be ignored from the extraction");
         MandatoryOff("ignoredids");
 
+        AddParameter(ParameterType_String, "copydir", "A directory where a copy of the created output file will be copied");
+        SetParameterDescription("copydir","A directory where a copy of the created output file will be copied");
+        MandatoryOff("copydir");
+
         AddRAMParameter();
 
         // Doc example parameter settings
@@ -181,6 +193,8 @@ private:
         m_country = this->GetParameterString("country");
         auto factory = CountryInfoFactory::New();
         m_pCountryInfos = factory->GetCountryInfo(m_country);
+        m_year = this->GetParameterString("year");
+        m_pCountryInfos->SetYear(m_year);
 
         if (!m_bWriteIdsOnlyFile) {
             if (!HasValue("vegstart")) {
@@ -196,7 +210,6 @@ private:
                 otbAppLogFATAL(<<"year is mandatory when extracting practices file!");
             }
             m_pCountryInfos->SetVegStart(trim(GetParameterAsString("vegstart")));
-            m_year = this->GetParameterString("year");
 
             std::string practice;
             std::string practiceStart;
@@ -229,9 +242,16 @@ private:
             if (HasValue("hwinterstart")) {
                 m_pCountryInfos->SetHWinterStart(trim(GetParameterAsString("hwinterstart")));
             }
+            if (HasValue("hwinterend")) {
+                m_pCountryInfos->SetHWinterEnd(trim(GetParameterAsString("hwinterend")));
+            }
+
         }
         const std::string &outFileName = GetParameterAsString("out");
         m_outPracticesFileStream.open(outFileName, std::ios_base::trunc | std::ios_base::out );
+        if (!m_outPracticesFileStream.is_open()) {
+            otbAppLogFATAL("Cannot open output file " << outFileName);
+        }
         WritePracticesFileHeader();
 
         if (HasValue("addfiles")) {
@@ -281,6 +301,8 @@ private:
         }
 */
         otbAppLogINFO("Extraction DONE!");
+
+        CopyToTargetFolder(outFileName);
     }
 
     void ProcessFeature(const AttributeEntry& ogrFeat) {
@@ -289,6 +311,7 @@ private:
             m_pCountryInfos->InitializeIndexes(ogrFeat);
             m_bFirstFeature = false;
         }
+
         if (!FilterFeature(ogrFeat)) {
             return;
         }
@@ -305,7 +328,7 @@ private:
             m_outPracticesFileStream << "SEQ_ID\n";
         } else {
             // # create result csv file for harvest and EFA practice evaluation
-            m_outPracticesFileStream << "FIELD_ID;SEQ_ID;COUNTRY;YEAR;MAIN_CROP;VEG_START;H_START;H_END;PRACTICE;P_TYPE;P_START;P_END;"
+            m_outPracticesFileStream << "SEQ_ID;FIELD_ID;COUNTRY;YEAR;MAIN_CROP;VEG_START;H_START;H_END;PRACTICE;P_TYPE;P_START;P_END;"
                                         "GeomValid;Duplic;Overlap;Area_meter;ShapeInd;CTnum;CT;LC;S1Pix;S2Pix\n";
         }
     }
@@ -315,7 +338,7 @@ private:
             std::cout << "Trying  to write feature in a closed stream!" << std::endl;
             return;
         }
-        const std::string &uid = m_pCountryInfos->GetUniqueId(ogrFeat);
+        const std::string &uid = m_pCountryInfos->GetOriId(ogrFeat);
         int seqId = m_pCountryInfos->GetSeqId(ogrFeat);
         const std::string &mainCrop = GetValueOrNA(m_pCountryInfos->GetMainCrop(ogrFeat));
         if (mainCrop == "NA") {
@@ -326,7 +349,7 @@ private:
         if (m_bWriteIdsOnlyFile) {
             m_outPracticesFileStream << seqId << "\n";
         } else {
-            m_outPracticesFileStream << uid.c_str() << ";" << seqId << ";" << m_country.c_str() << ";" << m_year.c_str() << ";";
+            m_outPracticesFileStream << seqId << ";" << uid.c_str() << ";" << m_country.c_str() << ";" << m_year.c_str() << ";";
             m_outPracticesFileStream << GetValueOrNA(m_pCountryInfos->GetMainCrop(ogrFeat)).c_str() << ";";
             m_outPracticesFileStream << GetValueOrNA(m_pCountryInfos->GetVegStart()).c_str() << ";";
             m_outPracticesFileStream << GetValueOrNA(m_pCountryInfos->GetHStart(ogrFeat)).c_str() << ";";
@@ -344,8 +367,8 @@ private:
             m_outPracticesFileStream << GetValueOrNA(m_pCountryInfos->GetCTnum(ogrFeat)).c_str() << ";";
             m_outPracticesFileStream << GetValueOrNA(m_pCountryInfos->GetCT(ogrFeat)).c_str() << ";";
             m_outPracticesFileStream << GetValueOrNA(m_pCountryInfos->GetLC(ogrFeat)).c_str() << ";";
-            m_outPracticesFileStream << GetValueOrNA(m_pCountryInfos->GetS1Pix(ogrFeat)).c_str() << ";";
-            m_outPracticesFileStream << GetValueOrNA(m_pCountryInfos->GetS2Pix(ogrFeat)).c_str() << "\n";
+            m_outPracticesFileStream << GetIntRepresentation(m_pCountryInfos->GetS1Pix(ogrFeat)).c_str() << ";";
+            m_outPracticesFileStream << GetIntRepresentation(m_pCountryInfos->GetS2Pix(ogrFeat)).c_str() << "\n";
         }
     }
 
@@ -356,9 +379,14 @@ private:
         return "NA";
     }
 
+    std::string GetIntRepresentation(const std::string &str) {
+        int intVal = std::atoi(str.c_str());
+        return std::to_string(intVal);
+    }
+
     bool FilterFeature(const AttributeEntry &ogrFeat) {
         // if we have filters and we did not find the id
-        std::string uid = m_pCountryInfos->GetUniqueId(ogrFeat);
+        std::string uid = m_pCountryInfos->GetOriId(ogrFeat);
         NormalizeFieldId(uid);
         if(m_FieldFilters.size() != 0 && m_FieldFilters.find(uid) == m_FieldFilters.end()) {
             return false;
@@ -410,6 +438,81 @@ private:
             otbAppLogINFO("Found a number of " << filters.size() << " filters!")
         }
         return filters;
+    }
+
+    void CopyToTargetFolder(const std::string &outFilePath) {
+        if (HasValue("copydir")) {
+            const std::string &copyDir = this->GetParameterString("copydir");
+            if(copyDir.size() == 0 || !boost::filesystem::is_directory(copyDir)) {
+                return;
+            }
+            otbAppLogINFO("Copying file " << outFilePath << " to " << copyDir << "...");
+
+            // first close the stream
+            m_outPracticesFileStream.flush();
+            m_outPracticesFileStream.close();
+
+            boost::filesystem::path p(outFilePath);
+            std::string fileName = p.filename().string();
+            std::string ext = p.extension().string();
+
+            boost::filesystem::path finalFilePath(copyDir);
+            finalFilePath /= (fileName);
+            std::string finalPathStr = finalFilePath.string();
+
+            if (!boost::filesystem::exists(finalPathStr) || !areFilesIdentical(outFilePath, finalPathStr)) {
+                boost::uuids::uuid uuid = boost::uuids::random_generator()();
+                const std::string &newFileName = (boost::lexical_cast<std::string>(uuid) + ext);
+                boost::filesystem::path targetPath(copyDir);
+                targetPath /= newFileName;
+                if (!copyFile(outFilePath, targetPath.string())) {
+                    otbAppLogCRITICAL("Output file " << outFilePath << " cannot be copied to target dir " << copyDir);
+                    return;
+                }
+                try {
+                    // check again if the target file exists and has the exact same content
+                    std::string targetPathStr = targetPath.string();
+                    if (!boost::filesystem::exists(finalPathStr) || !areFilesIdentical(targetPathStr, finalPathStr)) {
+                        boost::filesystem::rename(targetPathStr, finalPathStr);
+                    }
+                } catch (...) {
+                    otbAppLogCRITICAL("Output file " << targetPath << " cannot be copied to final target file " << finalFilePath);
+                    return;
+                }
+            }
+        }
+    }
+
+    bool areFilesIdentical(const std::string &file1, const std::string &file2) {
+          std::ifstream f1(file1, std::ifstream::binary|std::ifstream::ate);
+          std::ifstream f2(file2, std::ifstream::binary|std::ifstream::ate);
+
+          if (f1.fail() || f2.fail()) {
+            return false; //file problem
+          }
+
+          if (f1.tellg() != f2.tellg()) {
+            return false; //size mismatch
+          }
+
+          //seek back to beginning and use std::equal to compare contents
+          f1.seekg(0, std::ifstream::beg);
+          f2.seekg(0, std::ifstream::beg);
+          return std::equal(std::istreambuf_iterator<char>(f1.rdbuf()),
+                            std::istreambuf_iterator<char>(),
+                            std::istreambuf_iterator<char>(f2.rdbuf()));
+    }
+
+    bool copyFile(const std::string& fileNameFrom, const std::string& fileNameTo) {
+        std::ifstream in (fileNameFrom.c_str());
+        std::ofstream out (fileNameTo.c_str());
+        if (in.is_open() && out.is_open()) {
+            out << in.rdbuf();
+            out.close();
+            in.close();
+            return true;
+        }
+        return false;
     }
 
 private:

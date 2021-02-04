@@ -378,8 +378,11 @@ AgricPractDataExtrFileWriter2<TMeasurementVector>
 ::GenerateData()
 {
     // Check if the input are not null
-    if(m_FileFieldsContainer.size() == 0)
-        itkExceptionMacro(<<"At least one input is required, please set input using the methods AddInputMap");
+    if(m_FileFieldsContainer.size() == 0) {
+        std::cout << "At least one input is required, please set input using the methods AddInputMap" << std::endl;
+        // Commented to allow writing of even empty files (containing only header), just output the warning
+//        return;
+    }
 
     // Check if the filename is not empty
     if(m_TargetFileName.empty()) {

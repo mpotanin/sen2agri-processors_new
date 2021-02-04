@@ -1,6 +1,6 @@
 #include "PracticeCsvReader.h"
 
-#include <boost/algorithm/string.hpp>
+#include "boost/algorithm/string.hpp"
 
 bool PracticeCsvReader::ExtractFeatures(std::function<bool (const FeatureDescription&)> fnc)
 {

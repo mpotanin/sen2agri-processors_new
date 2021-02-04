@@ -1,7 +1,7 @@
 #include "StatisticsInfosXmlReader.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/algorithm/string.hpp"
 #include <fstream>
 #include <iostream>
 
@@ -78,7 +78,7 @@ static void startFn(void *pUserData, const char* pElement, const char** pAttribu
             if (strcmp(pAttributes[i], "date") == 0) {
                 std::string strDate(pAttributes[i+1]);
                 int weekNo, yearNo;
-                if (GetWeekFromDate(strDate, yearNo, weekNo, INPUT_FILE_DATE_PATTERN))
+                if (GetWeekFromDate(strDate, yearNo, weekNo))
                 {
                     curInfo.strDate = strDate;
                     curInfo.ttDate = GetTimeFromString(strDate);
@@ -96,7 +96,7 @@ static void startFn(void *pUserData, const char* pElement, const char** pAttribu
             } else if (infos->useDate2 && strcmp(pAttributes[i], "date2") == 0) {
                 std::string strDate(pAttributes[i+1]);
                 int weekNo, yearNo;
-                if (GetWeekFromDate(strDate, yearNo, weekNo, INPUT_FILE_DATE_PATTERN))
+                if (GetWeekFromDate(strDate, yearNo, weekNo))
                 {
                     if (infos->switchDates) {
                         // Here we switch the dates
@@ -162,7 +162,7 @@ StatisticsInfosXmlReader::StatisticsInfosXmlReader()
 {
 }
 
-void StatisticsInfosXmlReader::Initialize(const std::string &source, const std::vector<std::string> &filters, int year)
+void StatisticsInfosXmlReader::Initialize(const std::string &source, const std::vector<std::string> &, int year)
 {
     m_strSource = source;
     m_year = year;

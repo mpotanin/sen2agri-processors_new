@@ -1,15 +1,15 @@
 #include "StatisticsInfosFolderFilesReader.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/algorithm/string.hpp"
 #include <fstream>
 
 #include "TimeSeriesAnalysisUtils.h"
 
 StatisticsInfosFolderFilesReader::StatisticsInfosFolderFilesReader()
 {
-    m_InputFileHeader = {"KOD_PB", "date", "mean", "stdev"};
-    m_CoheInputFileHeader = {"KOD_PB", "date1", "date2", "mean", "stdev"};
+    m_InputFileHeaderLen = 4;   // {"NewID", "date", "mean", "stdev"};
+    m_CoheInputFileHeaderLen = 5; // {"NewID", "date1", "date2", "mean", "stdev"};
 }
 
 void StatisticsInfosFolderFilesReader::Initialize(const std::string &source, const std::vector<std::string> &filters, int year)
@@ -125,19 +125,19 @@ std::vector<std::string> StatisticsInfosFolderFilesReader::GetInputFileLineEleme
 bool StatisticsInfosFolderFilesReader::ExtractInfosFromLine(const std::string &fileLine, InputFileLineInfoType &lineInfo)
 {
     const std::vector<std::string> &lineElems = GetInputFileLineElements(fileLine);
-    if (lineElems.size() != m_InputFileHeader.size() &&
-        lineElems.size() != m_CoheInputFileHeader.size()) {
+    if (lineElems.size() != m_InputFileHeaderLen &&
+        lineElems.size() != m_CoheInputFileHeaderLen) {
         //otbAppLogWARNING("Invalid line fields length for line " << fileLine);
         std::cout << "Invalid line fields length for line " << fileLine << std::endl;
         return false;
     }
-    bool isCohe = (lineElems.size() == m_CoheInputFileHeader.size());
+    bool isCohe = (lineElems.size() == m_CoheInputFileHeaderLen);
     int meanIdx = isCohe ? 3 : 2;
     int stdDevIdx = isCohe ? 4 : 3;
     std::string::size_type sz;     // alias of size_t
     const std::string &strDate = lineElems[1];
     int weekNo, yearNo;
-    if (GetWeekFromDate(strDate, yearNo, weekNo, INPUT_FILE_DATE_PATTERN))
+    if (GetWeekFromDate(strDate, yearNo, weekNo))
     {
         lineInfo.fieldId = lineElems[0]; // Normally, here the name should be normalized
         lineInfo.strDate = strDate;
@@ -156,7 +156,7 @@ bool StatisticsInfosFolderFilesReader::ExtractInfosFromLine(const std::string &f
     {
         const std::string &strDate2 = lineElems[2];
         int weekNo2, yearNo2;
-        if (GetWeekFromDate(strDate2, yearNo2, weekNo2, INPUT_FILE_DATE_PATTERN)) {
+        if (GetWeekFromDate(strDate2, yearNo2, weekNo2)) {
             lineInfo.strDate2 = strDate2;
             lineInfo.ttDate2 = GetTimeFromString(strDate2);
             lineInfo.weekNo2 = weekNo2;

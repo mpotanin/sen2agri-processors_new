@@ -1,6 +1,6 @@
 #include "GSAACsvAttributesTablesReader.h"
 
-#include <boost/algorithm/string.hpp>
+#include "boost/algorithm/string.hpp"
 #include "CommonFunctions.h"
 
 bool GSAACsvAttributesTablesReader::ExtractAttributes(std::function<void (const AttributeEntry&)> fnc)

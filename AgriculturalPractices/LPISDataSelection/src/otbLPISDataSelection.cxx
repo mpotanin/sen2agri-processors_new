@@ -16,9 +16,9 @@
 #include "otbWrapperApplication.h"
 #include "otbWrapperApplicationFactory.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/lexical_cast.hpp"
+#include "boost/algorithm/string.hpp"
 
 #include "string_utils.hpp"
 #include "otbOGRDataSourceWrapper.h"

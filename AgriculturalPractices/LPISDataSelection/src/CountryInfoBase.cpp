@@ -1,40 +1,8 @@
 #include "CountryInfoBase.h"
+#include "../../Common/include/CommonFunctions.h"
 
 CountryInfoBase::CountryInfoBase()
 {
-    m_SeqIdFieldIdx = -1;
-    m_LandCoverFieldIdx = -1;
-
-    m_GeomValidIdx = -1;
-    m_DuplicIdx = -1;
-    m_OverlapIdx = -1;
-    m_Area_meterIdx = -1;
-    m_ShapeIndIdx = -1;
-    m_CTnumIdx = -1;
-    m_CTIdx = -1;
-    m_S1PixIdx = -1;
-    m_S2PixIdx = -1;
-}
-
-void CountryInfoBase::InitializeIndexes(const AttributeEntry &firstOgrFeat)
-{
-    m_SeqIdFieldIdx = firstOgrFeat.GetFieldIndex(SEQ_UNIQUE_ID);
-    m_LandCoverFieldIdx = firstOgrFeat.GetFieldIndex(LC_VAL);
-    if (m_LandCoverFieldIdx == -1) {
-        // Check if maybe we have the the old CR_CAT_VAL Field
-        m_LandCoverFieldIdx = firstOgrFeat.GetFieldIndex(CR_CAT_VAL);
-    }
-
-    m_GeomValidIdx = firstOgrFeat.GetFieldIndex("GeomValid");
-    m_DuplicIdx = firstOgrFeat.GetFieldIndex("Duplic");
-    m_OverlapIdx = firstOgrFeat.GetFieldIndex("Overlap");
-    m_Area_meterIdx = firstOgrFeat.GetFieldIndex("Area_meter");
-    m_ShapeIndIdx = firstOgrFeat.GetFieldIndex("ShapeInd");
-    m_CTnumIdx = firstOgrFeat.GetFieldIndex("CTnum");
-    m_CTIdx = firstOgrFeat.GetFieldIndex("CT");
-    m_S1PixIdx = firstOgrFeat.GetFieldIndex("S1Pix");
-    m_S2PixIdx = firstOgrFeat.GetFieldIndex("S2Pix");
-
 }
 
 void CountryInfoBase::SetAdditionalFiles(const std::vector<std::string> &additionalFiles) {
@@ -53,17 +21,11 @@ void CountryInfoBase::SetAdditionalFiles(const std::vector<std::string> &additio
     }
 }
 
-int CountryInfoBase::GetSeqId(const AttributeEntry &ogrFeat) {
-    if (m_SeqIdFieldIdx == -1) {
-        return -1;    // we don't have the column
-    }
-    return (int)ogrFeat.GetFieldAsDouble(m_SeqIdFieldIdx);
-}
-
 void CountryInfoBase::SetYear(const std::string &val) { m_year = val;}
 void CountryInfoBase::SetVegStart(const std::string &val) { m_vegstart = val;}
 void CountryInfoBase::SetHStart(const std::string &val) { m_hstart = val;}
 void CountryInfoBase::SetHWinterStart(const std::string &val) { m_hWinterStart = val;}
+void CountryInfoBase::SetHWinterEnd(const std::string &val) { m_hWinterEnd = val;}
 void CountryInfoBase::SetHEnd(const std::string &val) { m_hend = val;}
 void CountryInfoBase::SetPractice(const std::string &val) { m_practice = val;}
 void CountryInfoBase::SetPStart(const std::string &val) { m_pstart = val;}
@@ -115,6 +77,7 @@ void CountryInfoBase::ParseCsvFile(const std::string &filePath,
     MapHdrIdx headerLineMap;
     while (std::getline(fileStream, line))
     {
+        line = trim(line, " \"\r");
         // first line should be the header
         std::vector<std::string> lineItems = GetInputFileLineElements(line);
         if (curLine++ == 0) {
@@ -155,12 +118,3 @@ std::vector<std::string> CountryInfoBase::GetInputFileLineElements(const std::st
     return results;
 }
 
-std::string CountryInfoBase::GetFieldOrNA(const AttributeEntry &ogrFeat, int idx) {
-    if (idx != -1) {
-        const char* field = ogrFeat.GetFieldAsString(idx);
-        if (field != NULL) {
-            return field;
-        }
-    }
-    return "NA";
-}

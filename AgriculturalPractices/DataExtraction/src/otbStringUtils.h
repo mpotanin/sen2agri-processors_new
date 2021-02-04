@@ -31,16 +31,16 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/utility/enable_if.hpp>
+#include "boost/lexical_cast.hpp"
+#include "boost/algorithm/string.hpp"
+#include "boost/algorithm/string/predicate.hpp"
+#include "boost/utility/enable_if.hpp"
 #pragma GCC diagnostic pop
 #else
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/utility/enable_if.hpp>
+#include "boost/lexical_cast.hpp"
+#include "boost/algorithm/string.hpp"
+#include "boost/algorithm/string/predicate.hpp"
+#include "boost/utility/enable_if.hpp"
 #endif
 
 namespace otb

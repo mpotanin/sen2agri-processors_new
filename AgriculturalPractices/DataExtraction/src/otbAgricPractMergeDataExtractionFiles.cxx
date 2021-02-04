@@ -16,8 +16,8 @@
 #include "otbWrapperApplication.h"
 #include "otbWrapperApplicationFactory.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -27,7 +27,7 @@
 #include "string_utils.hpp"
 #include "CommonFunctions.h"
 #include <inttypes.h>
-#include <boost/algorithm/string.hpp>
+#include "boost/algorithm/string.hpp"
 
 #define BUFFSIZE 2048*2048
 
@@ -59,6 +59,7 @@ public:
                                                //in VectorData mapped to a string
 
     typedef struct FidInfos {
+        time_t ttFileCreationTime;
         std::string date;
         std::string date2;
         double meanVal;
@@ -156,9 +157,10 @@ public:
     }
 
 private:
-    AgricPractMergeDataExtractionFiles() : m_bForceKeepSuffixInOutput(false)
+    AgricPractMergeDataExtractionFiles() : m_bForceKeepSuffixInOutput(false),
+        m_bSortInputProducts(false)
     {
-        m_HeaderFields = {"KOD_PB", "date", "mean", "stdev"};
+        m_HeaderFields = {"NewID", "date", "mean", "stdev"};
     }
 
     void DoInit() override
@@ -193,6 +195,10 @@ private:
                                             "this filter will be merged");
         MandatoryOff("sfilter");
 
+        AddParameter(ParameterType_String, "maxdate", "Limit date to consider the values");
+        SetParameterDescription("maxdate","If the maxdate is set only the dates less than this value are considered");
+        MandatoryOff("maxdate");
+
         AddParameter(ParameterType_Int, "skeep", "Force keeping the suffix in the output file");
         SetParameterDescription("skeep","If the output is a folder and individual files are created, force"
                                             "keeping the suffix in the output files (for coherence, for ex.)");
@@ -211,6 +217,11 @@ private:
         MandatoryOff("limit");
         SetDefaultParameterInt("limit",5000);
 
+        AddParameter(ParameterType_Int, "sort", "Sorts the input products lexicographically");
+        SetParameterDescription("sort","If set, the input products will be sorted lexicographically");
+        MandatoryOff("sort");
+        SetDefaultParameterInt("sort",1);
+
         AddRAMParameter();
 
         // Doc example parameter settings
@@ -228,9 +239,16 @@ private:
 
     void DoExecute() override
     {
+        if (HasValue("sort")) {
+            m_bSortInputProducts = (GetParameterInt("sort") != 0);
+        }
         const std::vector<std::string> &inFilePaths = GetInputFilePaths();
         if (HasValue("sfilter")) {
             m_suffixFilter = GetParameterAsString("sfilter");
+        }
+
+        if (HasValue("maxdate")) {
+            m_MaxDate = GetParameterAsString("maxdate");
         }
 
         if (HasValue("skeep")) {
@@ -335,6 +353,12 @@ private:
             otbAppLogFATAL("Error opening input file, exiting...");
             return false;
         }
+        boost::filesystem::path p( filePath ) ;
+        std::time_t ttFileLastWriteTime = boost::filesystem::last_write_time( p ) ;
+        char buffer[15];
+        strftime(buffer, 15, "%Y-%m-%d", localtime(&ttFileLastWriteTime));
+        otbAppLogINFO("The last write date of the file " << filePath << " is " << buffer);
+
         std::string line;
         int i = 0;
         int j;
@@ -389,17 +413,23 @@ private:
                 }
                 // now extract the date(s) and the values
                 int curIdx = offset;
+                fidInfo.ttFileCreationTime = ttFileLastWriteTime;
                 fidInfo.date = results[curIdx++];
                 if (isCohe) {
                     fidInfo.date2 = results[curIdx++];
                 }
                 fidInfo.meanVal = std::atof(results[curIdx++].c_str());
                 fidInfo.stdDevVal = std::atof(results[curIdx++].c_str());
-                fid.infos.emplace_back(fidInfo);
+                if (m_MaxDate.size() == 0 || m_MaxDate >= fidInfo.date) {
+                    fid.infos.emplace_back(fidInfo);
+                }
                 j++;
             }
             if (fieldValid) {
-                retFids.emplace_back(fid);
+                // do not add fields that have no date (they did not pass maximum date filter)
+                if (fid.infos.size() > 0) {
+                    retFids.emplace_back(fid);
+                }
             }
             i++;
         }
@@ -428,7 +458,9 @@ private:
 //            fid.fid = GetAttribute(valuesEl, "id");
 //            fid.name = GetAttribute(valuesEl, "name");
 //            fid.infos = ReadFidInfos(valuesEl);
-//            retFids.emplace_back(fid);
+//            if (fid.infos.size() > 0) {
+//              retFids.emplace_back(fid);
+//            }
 //        }
 
 //        otbAppLogINFO("Reading file " << filePath << " OK");
@@ -447,7 +479,9 @@ private:
             fidInfo.date2 = GetAttribute(valuesEl, "date2");
             fidInfo.meanVal = std::atof(GetAttribute(valuesEl, "mean").c_str());
             fidInfo.stdDevVal = std::atof(GetAttribute(valuesEl, "stdev").c_str());
-           result.emplace_back(fidInfo);
+            if (m_MaxDate.size() == 0 || m_MaxDate >= fidInfo.date) {
+                result.emplace_back(fidInfo);
+            }
         }
         return result;
     }
@@ -489,7 +523,13 @@ private:
                 return ((lhs.date == rhs.date) && (lhs.date2 == rhs.date2)/*&&
                         (lhs.meanVal == rhs.meanVal)*/);};
 
-            auto pred = []( const FidInfosType& lhs, const FidInfosType& rhs ) {return ((lhs.date.compare(rhs.date)) < 0);};
+            auto pred = []( const FidInfosType& lhs, const FidInfosType& rhs ) {
+                int cmpRes = lhs.date.compare(rhs.date);
+                if (cmpRes == 0) {
+                    return (lhs.ttFileCreationTime < rhs.ttFileCreationTime);
+                }
+                return (cmpRes < 0);
+            };
             std::sort(fidType.infos.begin(), fidType.infos.end(),pred);
             auto last = std::unique(fidType.infos.begin(), fidType.infos.end(),comp);
             fidType.infos.erase(last, fidType.infos.end());
@@ -730,6 +770,12 @@ private:
           otbAppLogFATAL(<<"No image was given as input!");
       }
 
+      if (m_bSortInputProducts) {
+          //auto pred = []( const std::string& lhs, const std::string& rhs ) {return (lhs.date < rhs.date);};
+          otbAppLogINFO(<<"Sorting input products ...");
+          std::sort(retFilePaths.begin(), retFilePaths.end()/*, pred*/);
+      }
+
       return retFilePaths;
   }
 
@@ -742,7 +788,9 @@ private:
     std::vector<std::string> m_HeaderFields;
     bool m_bUseDate2;
     std::string m_suffixFilter;
+    std::string m_MaxDate;
     bool m_bForceKeepSuffixInOutput;
+    bool m_bSortInputProducts;
 
 };
 

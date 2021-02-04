@@ -16,14 +16,14 @@
 #include "otbWrapperApplication.h"
 #include "otbWrapperApplicationFactory.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "tinyxml_utils.hpp"
 #include "string_utils.hpp"
 #include "CommonFunctions.h"
 #include <inttypes.h>
-#include <boost/iostreams/device/mapped_file.hpp> // for mmap
+#include "boost/iostreams/device/mapped_file.hpp" // for mmap
 #include <algorithm>  // for std::find
 #include <iostream>   // for std::cout
 #include <cstring>
@@ -37,9 +37,9 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/filesystem.hpp>
+#include "boost/algorithm/string.hpp"
+#include "boost/lexical_cast.hpp"
+#include "boost/filesystem.hpp"
 
 
 namespace otb
