@@ -2,6 +2,10 @@ import numpy as np
 import dateutil.parser
 import datetime
 
+import glob, os, shutil
+from pathlib import Path
+import ntpath
+
 from osgeo import osr, ogr
 osr.UseExceptions()
 ogr.UseExceptions()
@@ -62,9 +66,16 @@ def fuse_dets(date1, date2, conf, mission, pr_date1, pr_date2, pr_conf, pr_mis):
             for j in range(pr_lend):
                 valid_inter, interv = intersection_date(date1[i], date2[i], pr_date1[j], pr_date2[j])
                 if valid_inter: #conferma di detection precedente
-### Inizio -------- aggiunta da LAURA
-                    interv = np.array((date1[i], date2[i]))
-### Fine   -------- aggiunta da LAURA
+###
+                    if conf[i] > pr_conf[j]:
+                        interv = np.array((date1[i], date2[i]))
+                    else:
+                        interv = np.array((pr_date1[j], pr_date2[j]))
+###
+
+#### Inizio -------- aggiunta da LAURA
+#                    interv = np.array((date1[i], date2[i]))
+#### Fine   -------- aggiunta da LAURA
                     mis_str = pr_mis[j]
                     if mission[i] not in pr_mis[j]:
                         mis_str = pr_mis[j] + '/' + mission[i]
@@ -99,9 +110,24 @@ def cloneAndUpdateShapefile(source, dest):
 #   None: write a copy of the file with dest file name
 
     print("Cloning source...")
-    drv = ogr.GetDriverByName('ESRI Shapefile')
-    ds = drv.CopyDataSource(ogr.Open(source), dest)
-    layer = ds.GetLayerByIndex(0)
+    # drv = ogr.GetDriverByName('ESRI Shapefile')
+    # ds = drv.CopyDataSource(ogr.Open(source), dest)
+    # layer = ds.GetLayerByIndex(0)
+    parentSrcDir = Path(source).parent
+    destDir = Path(dest).parent
+    fileName = ntpath.basename(source)
+    destFileName = ntpath.basename(dest)
+    fileNameNoExt = os.path.splitext(fileName)[0]
+    destFileNameNoExt = os.path.splitext(destFileName)[0]
+
+    pathToCheck = os.path.join(parentSrcDir, "{}.*".format(fileNameNoExt))
+    files = glob.iglob(pathToCheck)
+    for file in files:
+        if os.path.isfile(file):
+            srcFileExt = os.path.splitext(file)[1]
+            destFilePath = os.path.join(destDir, "{}{}".format(destFileNameNoExt, srcFileExt))
+            print ("Copying source file {} to dest file {}".format(file, destFilePath))
+            shutil.copyfile(file, destFilePath)
     
 #    for i in range(1, max_dates+1):
 #        layer.CreateField(ogr.FieldDefn('m%d_date' % i, ogr.OFTString))
@@ -220,9 +246,9 @@ def writeDetections_S2(dest, segment_ids, confidence, dateList, valid_date_list_
                 feature['m%d_dend' % count_dates] = "{:%Y-%m-%d %H:%M:%S}".format(d2)
                 feature['m%d_conf' % count_dates] = round(c, 3)
                 feature['m%d_mis' % count_dates] = mis_str
-            feature['proc'] = 1
             feature['mow_n'] = count_dates
-            layer.SetFeature(feature)
+        feature['proc'] = 1
+        layer.SetFeature(feature)
         if count:
             print("Cannot find %d segments" % count)
 
@@ -318,9 +344,9 @@ def writeDetections_S1(dest, segment_ids, confidence, dateList1, dateList2, miss
                 feature['m%d_conf' % count_dates] = round(c, 3)
                 feature['m%d_mis' % count_dates] = mis_str
 
-            feature['proc'] = 1
             feature['mow_n'] = count_dates
-            layer.SetFeature(feature)
+        feature['proc'] = 1
+        layer.SetFeature(feature)
         if count:
             print("Cannot find %d segments" % count)
 

@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+import lxml.etree as et
 
 import datetime
 
@@ -151,6 +152,9 @@ def load_stats(vrt_data, vrt_df, segments, unique_segments, seg_attributes, seg_
         print(datetime.datetime.now())
         band = vrt_data.GetRasterBand(d_d['Index']+1).ReadAsArray()
 
+        if band is None:
+            continue
+
         print("ext_mask")
         print(datetime.datetime.now())
         ext_mask = np.logical_and(np.logical_and(np.isfinite(band), band!=invalid_data), band!=0)
@@ -230,48 +234,44 @@ def remove_corrupted_files(data_list):
     return ret_list
 
 
-
 def make_vrt(data_list, wkt_dst_srs, outputDir, output_vrt_file, outputBounds=None, resolution='average', resampling=gdal.GRA_Bilinear, srcNodata=0, error_threshold=0.125):
 
     if len(data_list) == 0:
         return 0
 
     output_tmp_file_list=[os.path.join(outputDir, os.path.basename(file)+".VRT") for file in data_list]
-
+    output_tmp_file_list2=[]
     for file, dst_file in zip(data_list, output_tmp_file_list):
         # Open source dataset and read source SRS
         gdal_data = gdal.Open(file)
         data_proj = gdal_data.GetProjection()
         if data_proj == '':
-            d=dict(gdal.Info(file,format='json'))
-            in_epsg=int(d['metadata']['GEOLOCATION']['SRS'].rsplit('"EPSG","')[-1].split('"')[0])
-            src_srs =  osr.SpatialReference()
-            src_srs.ImportFromEPSG(in_epsg)
-            src_srs = src_srs.ExportToWkt()
+            print("Data without geoprojection info. DISCARDED!")
         else:
-            src_srs = None
-
-        ## Call AutoCreateWarpedVRT()
-        #tmp_ds = gdal.AutoCreateWarpedVRT(gdal_data, src_srs, wkt_dst_srs, resampling, error_threshold)
-
-        ## Create the final warped raster
-        #dst_ds = gdal.GetDriverByName('VRT').CreateCopy(dst_file, tmp_ds)
-
-        # Warp to dst_srs
-        dst_ds = gdal.Warp(dst_file, gdal_data, resampleAlg=resampling, srcNodata=srcNodata,
-                           dstNodata=srcNodata, srcSRS=src_srs, dstSRS=wkt_dst_srs, errorThreshold=error_threshold)
-        del dst_ds
+            # Warp to dst_srs
+            dst_ds = gdal.Warp(dst_file, gdal_data, resampleAlg=resampling, srcNodata=srcNodata,
+                               dstNodata=srcNodata, dstSRS=wkt_dst_srs, errorThreshold=error_threshold)
+            del dst_ds
+            output_tmp_file_list2.append(dst_file)
 
     print(os.path.join(outputDir, output_vrt_file))
     if outputBounds:
-        vrt_data=gdal.BuildVRT(output_vrt_file, output_tmp_file_list, separate=True, outputBounds=outputBounds,
+        vrt_data=gdal.BuildVRT(output_vrt_file, output_tmp_file_list2, separate=True, outputBounds=outputBounds,
                                resolution=resolution, srcNodata=srcNodata)
     else:
-        vrt_data=gdal.BuildVRT(output_vrt_file, output_tmp_file_list, separate=True,
+        vrt_data=gdal.BuildVRT(output_vrt_file, output_tmp_file_list2, separate=True,
                                resolution=resolution, srcNodata=srcNodata)
 
 
     bands = vrt_data.RasterCount
+    if bands > 0:
+        del vrt_data
+        vrt_data = gdal.Open(output_vrt_file)
+        xml = et.ElementTree(file=output_vrt_file)
+        for band_num in range(1, bands+1):
+            filename = xml.xpath('//VRTRasterBand[@band=%d]//SourceFilename/text()' % band_num)[0]
+            band = vrt_data.GetRasterBand(band_num)
+            band.SetDescription(filename)
 
     # to force gdal to write file
     del vrt_data
@@ -395,7 +395,7 @@ def layer2mask(layerFile, rasterFile, outputFile, layer_type='ROI', class_attrib
     print("input raster projection", osr_data_projection)
 
     # open the vectorial layer file
-    ogr_data = ogr.Open(layerFile,0)
+    ogr_data = ogr.Open(layerFile,1)    # 0 means read-only. 1 means writeable.
     Layer = ogr_data.GetLayer(0)
     LayerName = Layer.GetName()
 
@@ -416,14 +416,17 @@ def layer2mask(layerFile, rasterFile, outputFile, layer_type='ROI', class_attrib
     driver = gdal.GetDriverByName('GTiff')
     if layer_type=='ROI':
         outMask = driver.Create(outputFile, gdal_data.RasterXSize, gdal_data.RasterYSize, 1, gdal.GDT_Byte)
+        fill_val = 0
     elif layer_type=='segments':
-        outMask = driver.Create(outputFile, gdal_data.RasterXSize, gdal_data.RasterYSize, 1, gdal.GDT_UInt32)
+        outMask = driver.Create(outputFile, gdal_data.RasterXSize, gdal_data.RasterYSize, 1, gdal.GDT_Int32)
+        fill_val = -1
     elif layer_type=='classes':
         outMask = driver.Create(outputFile, gdal_data.RasterXSize, gdal_data.RasterYSize, 1, gdal.GDT_UInt32)
+        fill_val = 0
     outMask.SetGeoTransform(data_geo_transform)
     outMask.SetProjection(data_projection)
     outband = outMask.GetRasterBand(1)
-    outband.Fill(0)
+    outband.Fill(fill_val)
     outMask.FlushCache()
 
     # rasterize ROI layer over SAR data

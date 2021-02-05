@@ -33,16 +33,17 @@
 #include "otbWrapperApplication.h"
 #include "otbWrapperInputImageListParameter.h"
 
-#include "otbStatisticsXMLFileReader.h"
 #include "../MultiModelImageClassifier/otbMultiModelImageClassificationFilter.h"
-#include "otbMultiToMonoChannelExtractROI.h"
-#include "otbImageToVectorImageCastFilter.h"
-#include "otbWrapperTypes.h"
-#include "otbObjectList.h"
-#include "otbVectorImage.h"
 #include "otbImageList.h"
+#include "otbImageToVectorImageCastFilter.h"
+#include "otbMultiToMonoChannelExtractROI.h"
+#include "otbObjectList.h"
+#include "otbStatisticsXMLFileReader.h"
+#include "otbVectorImage.h"
+#include "otbWrapperTypes.h"
 
 #include "../Filters/CropTypePreprocessing.h"
+#include "../Filters/RedEdgeBandsExtractor.h"
 #include "../Filters/otbStreamingStatisticsMapFromLabelImageFilter.h"
 
 namespace otb
@@ -62,11 +63,12 @@ public:
 
     itkTypeMacro(OpticalFeatures, otb::Application);
 
-    typedef Int16VectorImageType                                                     OutputImageType;
-    typedef FloatVectorImageType                                                     FeatureImageType;
-    typedef Int32ImageType                                                           ClassImageType;
+    typedef Int16VectorImageType OutputImageType;
+    typedef FloatVectorImageType FeatureImageType;
+    typedef Int32ImageType ClassImageType;
 
-    typedef otb::StreamingStatisticsMapFromLabelImageFilter<FeatureImageType, ClassImageType> StatisticsFilterType;
+    typedef otb::StreamingStatisticsMapFromLabelImageFilter<FeatureImageType, ClassImageType>
+        StatisticsFilterType;
 
 private:
     void DoInit() override
@@ -119,13 +121,12 @@ private:
         SetMinimumParameterFloatValue("pixsize", 1.0);
         MandatoryOff("pixsize");
 
-        AddParameter(ParameterType_String,
-                     "mission",
+        AddParameter(ParameterType_String, "mission",
                      "The main raster series that will be used. By default, SENTINEL is used");
         MandatoryOff("mission");
 
-        AddParameter(
-            ParameterType_Empty, "rededge", "Include Sentinel-2 vegetation red edge bands");
+        AddParameter(ParameterType_Empty, "rededge",
+                     "Include Sentinel-2 vegetation red edge bands");
         MandatoryOff("rededge");
 
         AddRAMParameter();
@@ -134,9 +135,7 @@ private:
         SetDocExampleParameterValue("out", "features.tif");
     }
 
-    void DoUpdateParameters() override
-    {
-    }
+    void DoUpdateParameters() override {}
 
     void DoExecute() override
     {
@@ -153,18 +152,29 @@ private:
         if (HasValue("mission")) {
             mission = this->GetParameterString("mission");
         }
+        auto redEdge = GetParameterEmpty("rededge");
 
         TileData td;
-        m_Preprocessor = CropTypePreprocessing::New();
-        m_Preprocessor->SetPixelSize(pixSize);
-        m_Preprocessor->SetMission(mission);
-        if (GetParameterEmpty("rededge")) {
-            m_Preprocessor->SetIncludeRedEdge(true);
-        }
+        if (redEdge) {
+            m_RedEdgeBandsExtractor = RedEdgeBandsExtractor::New();
+            m_RedEdgeBandsExtractor->SetPixelSize(pixSize);
+            m_RedEdgeBandsExtractor->SetMission(mission);
+            m_RedEdgeBandsExtractor->SetUseSwir2Band(true);
 
-        // compute the desired size of the processed rasters
-        m_Preprocessor->updateRequiredImageSize(descriptors, 0, descriptors.size(), td);
-        m_Preprocessor->Build(descriptors.begin(), descriptors.end(), td);
+            m_RedEdgeBandsExtractor->updateRequiredImageSize(descriptors, 0, descriptors.size(),
+                                                             td);
+            m_RedEdgeBandsExtractor->Build(descriptors.begin(), descriptors.end(), td);
+        } else {
+            m_CropTypePreprocessing = CropTypePreprocessing::New();
+            m_CropTypePreprocessing->SetPixelSize(pixSize);
+            m_CropTypePreprocessing->SetMission(mission);
+            m_CropTypePreprocessing->SetUseSwir2Band(true);
+
+            // compute the desired size of the processed rasters
+            m_CropTypePreprocessing->updateRequiredImageSize(descriptors, 0, descriptors.size(),
+                                                             td);
+            m_CropTypePreprocessing->Build(descriptors.begin(), descriptors.end(), td);
+        }
 
         TemporalResamplingMode resamplingMode = TemporalResamplingMode::Resample;
         const auto &modeStr = GetParameterString("mode");
@@ -184,21 +194,40 @@ private:
             sp.emplace_back(SensorPreferences{ "LANDSAT", 2, 16 });
         }
 
-        auto preprocessors = CropTypePreprocessingList::New();
-        preprocessors->PushBack(m_Preprocessor);
+        FloatVectorImageType *featureImage;
+        if (redEdge) {
+            auto preprocessors = RedEdgeBandsExtractorList::New();
+            preprocessors->PushBack(m_RedEdgeBandsExtractor);
 
-        std::vector<MissionDays> sensorOutDays;
-        if (HasValue("dates")) {
-            sensorOutDays = readOutputDays(GetParameterString("dates"));
+            std::vector<MissionDays> sensorOutDays;
+            if (HasValue("dates")) {
+                sensorOutDays = readOutputDays(GetParameterString("dates"));
+            } else {
+                sensorOutDays = getOutputDays(preprocessors, resamplingMode, mission, sp);
+            }
+
+            if (HasValue("outdates")) {
+                writeOutputDays(sensorOutDays, GetParameterString("outdates"));
+            }
+
+            featureImage = m_RedEdgeBandsExtractor->GetOutput(sensorOutDays);
         } else {
-            sensorOutDays = getOutputDays(preprocessors, resamplingMode, mission, sp);
-        }
+            auto preprocessors = CropTypePreprocessingList::New();
+            preprocessors->PushBack(m_CropTypePreprocessing);
 
-        if (HasValue("outdates")) {
-            writeOutputDays(sensorOutDays, GetParameterString("outdates"));
-        }
+            std::vector<MissionDays> sensorOutDays;
+            if (HasValue("dates")) {
+                sensorOutDays = readOutputDays(GetParameterString("dates"));
+            } else {
+                sensorOutDays = getOutputDays(preprocessors, resamplingMode, mission, sp);
+            }
 
-        auto featureImage = m_Preprocessor->GetOutput(sensorOutDays);
+            if (HasValue("outdates")) {
+                writeOutputDays(sensorOutDays, GetParameterString("outdates"));
+            }
+
+            featureImage = m_CropTypePreprocessing->GetOutput(sensorOutDays);
+        }
         featureImage->UpdateOutputInformation();
 
         auto classImage = GetParameterInt32Image("ref");
@@ -259,10 +288,11 @@ private:
         }
     }
 
-    CropTypePreprocessing::Pointer          m_Preprocessor;
-    StatisticsFilterType::Pointer           m_StatisticsFilter;
+    CropTypePreprocessing::Pointer m_CropTypePreprocessing;
+    RedEdgeBandsExtractor::Pointer m_RedEdgeBandsExtractor;
+    StatisticsFilterType::Pointer m_StatisticsFilter;
 };
-}
-}
+} // namespace Wrapper
+} // namespace otb
 
 OTB_APPLICATION_EXPORT(otb::Wrapper::OpticalFeatures)
