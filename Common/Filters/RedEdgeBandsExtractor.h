@@ -46,38 +46,31 @@
 typedef otb::TemporalResamplingFilter<ImageType, MaskType, ImageType> TemporalResamplingFilterType;
 typedef otb::ObjectList<TemporalResamplingFilterType> TemporalResamplingFilterListType;
 
-typedef otb::CropTypeFeatureExtractionFilter<ImageType> CropTypeFeatureExtractionFilterType;
-typedef otb::ObjectList<CropTypeFeatureExtractionFilterType>
-    CropTypeFeatureExtractionFilterListType;
-class CropTypePreprocessing : public TimeSeriesReader
+class RedEdgeBandsExtractor : public TimeSeriesReader
 {
 public:
-    typedef CropTypePreprocessing Self;
+    typedef RedEdgeBandsExtractor Self;
     typedef TimeSeriesReader Superclass;
     typedef itk::SmartPointer<Self> Pointer;
     typedef itk::SmartPointer<const Self> ConstPointer;
 
     itkNewMacro(Self);
-    itkTypeMacro(CropTypePreprocessing, TimeSeriesReader);
+    itkTypeMacro(RedEdgeBandsExtractor, TimeSeriesReader);
 
-    itkSetMacro(IncludeRedEdge, bool);
-    itkGetMacro(IncludeRedEdge, bool);
     itkSetMacro(UseSwir2Band, bool);
     itkGetMacro(UseSwir2Band, bool);
 
-    CropTypePreprocessing() : m_IncludeRedEdge(), m_UseSwir2Band()
+    RedEdgeBandsExtractor() : m_UseSwir2Band()
     {
         m_TemporalResamplers = TemporalResamplingFilterListType::New();
-        m_FeatureExtractors = CropTypeFeatureExtractionFilterListType::New();
     }
 
     void getRedEdgeBands(const std::unique_ptr<MetadataHelper<float, uint8_t>> &pHelper,
                          const TileData &td,
                          ImageDescriptor &descriptor) override
     {
-        if (!m_IncludeRedEdge) {
-            return;
-        }
+        descriptor.bands.clear();
+
         std::vector<std::string> redEdgeBands = pHelper->GetRedEdgeBandNames();
         if (redEdgeBands.size() == 0) {
             return;
@@ -114,27 +107,13 @@ public:
         }
     }
 
-    int getBandCount(const std::string &sensor) override
-    {
-        if (sensor == "SENTINEL") {
-            if (m_IncludeRedEdge) {
-                return 8;
-            } else {
-                return 4;
-            }
-        } else if (sensor == "SPOT" || sensor == "LANDSAT") {
-            return 4;
-        }
-        itkGenericExceptionMacro("Unknown sensor " << sensor);
-    }
+    int getBandCount(const std::string &) override { return 4; }
 
     otb::Wrapper::FloatVectorImageType *GetOutput(const std::vector<MissionDays> &sensorOutDays)
     {
         auto temporalResampler = TemporalResamplingFilterType::New();
-        auto featureExtractor = CropTypeFeatureExtractionFilterType::New();
 
         m_TemporalResamplers->PushBack(temporalResampler);
-        m_FeatureExtractors->PushBack(featureExtractor);
 
         otb::SensorDataCollection sdCollection;
         for (const auto &e : sensorOutDays) {
@@ -160,18 +139,13 @@ public:
         // The output days will be updated later
         temporalResampler->SetInputData(sdCollection);
 
-        featureExtractor->SetInput(temporalResampler->GetOutput());
-        featureExtractor->SetSensorData(sdCollection);
-
-        return featureExtractor->GetOutput();
+        return temporalResampler->GetOutput();
     }
 
 private:
-    bool m_IncludeRedEdge;
     bool m_UseSwir2Band;
 
     TemporalResamplingFilterListType::Pointer m_TemporalResamplers;
-    CropTypeFeatureExtractionFilterListType::Pointer m_FeatureExtractors;
 };
 
-typedef otb::ObjectList<CropTypePreprocessing> CropTypePreprocessingList;
+typedef otb::ObjectList<RedEdgeBandsExtractor> RedEdgeBandsExtractorList;

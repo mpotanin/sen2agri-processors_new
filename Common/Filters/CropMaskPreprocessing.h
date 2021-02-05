@@ -25,7 +25,7 @@
 
 #include "otbStreamingResampleImageFilter.h"
 
- // Transform
+// Transform
 #include "itkScalableAffineTransform.h"
 //#include "itkIdentityTransform.h"
 #include "itkScaleTransform.h"
@@ -60,10 +60,10 @@ typedef otb::TemporalResamplingFilter<ImageType, MaskType, ImageType> TemporalRe
 typedef otb::ObjectList<TemporalResamplingFilterType> TemporalResamplingFilterListType;
 
 typedef TemporalMergingFunctor<ImageType::PixelType, MaskType::PixelType>
-TemporalMergingFunctorType;
+    TemporalMergingFunctorType;
 typedef otb::
-BinaryFunctorImageFilterWithNBands<ImageType, MaskType, ImageType, TemporalMergingFunctorType>
-TemporalMergingFilterType;
+    BinaryFunctorImageFilterWithNBands<ImageType, MaskType, ImageType, TemporalMergingFunctorType>
+        TemporalMergingFilterType;
 typedef otb::ObjectList<TemporalMergingFilterType> TemporalMergingFilterListType;
 
 typedef CropMaskSupervisedRedEdgeFeaturesFilter<ImageType> RedEdgeFeaturesFilterType;
@@ -84,15 +84,15 @@ public:
 
         itkSetMacro(IncludeRedEdge, bool) itkGetMacro(IncludeRedEdge, bool)
 
-        itkSetMacro(W, int) itkGetMacro(W, int)
+            itkSetMacro(W, int) itkGetMacro(W, int)
 
-        itkSetMacro(Delta, float) itkGetMacro(Delta, float)
+                itkSetMacro(Delta, float) itkGetMacro(Delta, float)
 
-        itkSetMacro(TSoil, float) itkGetMacro(TSoil, float)
+                    itkSetMacro(TSoil, float) itkGetMacro(TSoil, float)
 
-        itkSetMacro(BM, bool) itkGetMacro(BM, bool)
+                        itkSetMacro(BM, bool) itkGetMacro(BM, bool)
 
-        CropMaskPreprocessing()
+                            CropMaskPreprocessing()
         : m_IncludeRedEdge()
     {
         m_TemporalResamplers = TemporalResamplingFilterListType::New();
@@ -103,9 +103,9 @@ public:
         m_ConcatenateImagesFilters = ConcatenateImagesFilterListType::New();
     }
 
-    void getRedEdgeBands(const std::unique_ptr<MetadataHelper<float, uint8_t>>& pHelper,
-        const TileData& td,
-        ImageDescriptor& descriptor) override
+    void getRedEdgeBands(const std::unique_ptr<MetadataHelper<float, uint8_t>> &pHelper,
+                         const TileData &td,
+                         ImageDescriptor &descriptor) override
     {
         if (!m_IncludeRedEdge) {
             return;
@@ -138,17 +138,17 @@ public:
         }
     }
 
-    otb::Wrapper::FloatVectorImageType* GetOutput(const std::vector<MissionDays>& sensorOutDays)
+    otb::Wrapper::FloatVectorImageType *GetOutput(const std::vector<MissionDays> &sensorOutDays)
     {
         std::map<std::string, std::vector<int>> dayMap;
-        for (const auto& e : sensorOutDays) {
+        for (const auto &e : sensorOutDays) {
             dayMap[e.mission] = e.days;
         }
 
         // Also build the image dates structures
         otb::SensorDataCollection sdCollection;
         std::string lastMission = "";
-        for (const ImageDescriptor& id : m_Descriptors) {
+        for (const ImageDescriptor &id : m_Descriptors) {
             if (id.mission != lastMission) {
                 otb::SensorData sd;
                 sd.sensorName = id.mission;
@@ -158,7 +158,7 @@ public:
                 lastMission = id.mission;
             }
 
-            auto& sd = sdCollection.back();
+            auto &sd = sdCollection.back();
             int inDay = getDaysFromEpoch(id.aquisitionDate);
 
             sd.inDates.push_back(inDay);
@@ -189,7 +189,7 @@ public:
             m_TemporalResamplers->PushBack(redEdgeTemporalResampler);
 
             otb::SensorDataCollection redEdgeSdCollection;
-            for (const auto& e : sensorOutDays) {
+            for (const auto &e : sensorOutDays) {
                 if (e.mission == SENTINEL) {
                     otb::SensorData sd;
 
@@ -197,7 +197,7 @@ public:
                     sd.outDates = e.days;
                     sd.bandCount = 6;
 
-                    for (const ImageDescriptor& id : m_Descriptors) {
+                    for (const ImageDescriptor &id : m_Descriptors) {
                         if (id.mission == e.mission) {
                             int inDay = getDaysFromEpoch(id.aquisitionDate);
                             sd.inDates.push_back(inDay);
@@ -221,21 +221,21 @@ public:
         std::vector<ImageInfo> imgInfos;
         int priority = 10;
         int index = 0;
-        for (const auto& sd : sdCollection) {
+        for (const auto &sd : sdCollection) {
             for (auto date : sd.outDates) {
                 ImageInfo ii(index++, date, priority);
                 imgInfos.push_back(ii);
             }
             priority--;
         }
-        std::sort(imgInfos.begin(), imgInfos.end(), [](const ImageInfo& o1, const ImageInfo& o2) {
+        std::sort(imgInfos.begin(), imgInfos.end(), [](const ImageInfo &o1, const ImageInfo &o2) {
             return (o1.day < o2.day) || ((o1.day == o2.day) && (o1.priority > o2.priority));
-            });
+        });
 
         // count the number of output images and create the out days file
         std::vector<int> od;
         int lastDay = -1;
-        for (auto& imgInfo : imgInfos) {
+        for (auto &imgInfo : imgInfos) {
             if (lastDay != imgInfo.day) {
                 od.push_back(imgInfo.day);
                 lastDay = imgInfo.day;
@@ -248,17 +248,17 @@ public:
         // The number of image bands can be computed as the ratio between the bands in the image and
         // the bands in the mask
         int imageBands = m_BandsConcat->GetOutput()->GetNumberOfComponentsPerPixel() /
-            m_MaskConcat->GetOutput()->GetNumberOfComponentsPerPixel();
+                         m_MaskConcat->GetOutput()->GetNumberOfComponentsPerPixel();
 
         temporalMerger->SetNumberOfOutputBands(imageBands * od.size());
         temporalMerger->SetFunctor(
             TemporalMergingFunctor<ImageType::PixelType, MaskType::PixelType>(imgInfos, od.size(),
-                imageBands));
+                                                                              imageBands));
 
         temporalMerger->SetInput1(temporalResampler->GetOutput());
         temporalMerger->SetInput2(m_MaskConcat->GetOutput());
 
-        otb::Wrapper::FloatVectorImageType* output;
+        otb::Wrapper::FloatVectorImageType *output;
         if (m_BM) {
             auto featureExtractorBM = FeatureExtractorBMFilterType::New();
             featureExtractorBM->GetFunctor().m_W = m_W;
@@ -270,8 +270,7 @@ public:
             m_FeatureExtractorsBM->PushBack(featureExtractorBM);
 
             output = featureExtractorBM->GetOutput();
-        }
-        else {
+        } else {
             auto featureExtractor = FeatureExtractorFilterType::New();
             featureExtractor->GetFunctor().m_W = m_W;
             featureExtractor->GetFunctor().m_Delta = m_Delta;
@@ -287,8 +286,7 @@ public:
 
         if (!m_IncludeRedEdge || !redEdgeFeaturesFilter) {
             return output;
-        }
-        else {
+        } else {
             auto concatenateImagesFilter = ConcatenateImagesFilterType::New();
             concatenateImagesFilter->PushBackInput(output);
             concatenateImagesFilter->PushBackInput(redEdgeFeaturesFilter->GetOutput());

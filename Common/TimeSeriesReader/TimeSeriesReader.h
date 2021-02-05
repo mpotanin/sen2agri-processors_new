@@ -29,7 +29,7 @@
 #include "otbGridResampleImageFilter.h"
 #include "otbStreamingResampleImageFilter.h"
 
- // Transform
+// Transform
 #include "itkScalableAffineTransform.h"
 //#include "itkIdentityTransform.h"
 #include "itkScaleTransform.h"
@@ -75,30 +75,30 @@ typedef otb::Image<uint8_t> UInt8ImageType;
 typedef otb::VectorImage<uint8_t> UInt8VectorImageType;
 
 typedef otb::GridResampleImageFilter<otb::Wrapper::UInt8VectorImageType,
-    otb::Wrapper::UInt8VectorImageType,
-    double>
+                                     otb::Wrapper::UInt8VectorImageType,
+                                     double>
     UInt8VectorResampleFilterType;
 typedef otb::
-GridResampleImageFilter<otb::Wrapper::Int16ImageType, otb::Wrapper::Int16ImageType, double>
-Int16ResampleFilterType;
+    GridResampleImageFilter<otb::Wrapper::Int16ImageType, otb::Wrapper::Int16ImageType, double>
+        Int16ResampleFilterType;
 typedef otb::
-GridResampleImageFilter<otb::Wrapper::Int16ImageType, otb::Wrapper::FloatImageType, double>
-Int16FloatResampleFilterType;
+    GridResampleImageFilter<otb::Wrapper::Int16ImageType, otb::Wrapper::FloatImageType, double>
+        Int16FloatResampleFilterType;
 
 typedef otb::GenericRSResampleImageFilter<otb::Wrapper::FloatImageType,
-    otb::Wrapper::FloatImageType>
+                                          otb::Wrapper::FloatImageType>
     FloatReprojectResampleFilterType;
 typedef otb::GenericRSResampleImageFilter<otb::Wrapper::UInt8ImageType,
-    otb::Wrapper::UInt8ImageType>
+                                          otb::Wrapper::UInt8ImageType>
     UInt8ReprojectResampleFilterType;
 typedef otb::GenericRSResampleImageFilter<otb::Wrapper::UInt8VectorImageType,
-    otb::Wrapper::UInt8VectorImageType>
+                                          otb::Wrapper::UInt8VectorImageType>
     UInt8VectorReprojectResampleFilterType;
 typedef otb::GenericRSResampleImageFilter<otb::Wrapper::Int16ImageType,
-    otb::Wrapper::Int16ImageType>
+                                          otb::Wrapper::Int16ImageType>
     Int16ReprojectResampleFilterType;
 typedef otb::GenericRSResampleImageFilter<otb::Wrapper::Int16ImageType,
-    otb::Wrapper::FloatImageType>
+                                          otb::Wrapper::FloatImageType>
     Int16FloatReprojectResampleFilterType;
 
 typedef otb::SpotMaskFilter SpotMaskFilterType;
@@ -108,31 +108,31 @@ typedef otb::SentinelMaskFilter SentinelMaskFilterType;
 typedef otb::ObjectList<SentinelMaskFilterType> SentinelMaskFilterListType;
 
 typedef itk::VectorIndexSelectionCastImageFilter<otb::Wrapper::Int16VectorImageType,
-    otb::Wrapper::FloatImageType>
+                                                 otb::Wrapper::FloatImageType>
     ExtractChannelFilterType;
 typedef otb::ObjectList<ExtractChannelFilterType> ExtractChannelListType;
 
 typedef itk::VectorIndexSelectionCastImageFilter<otb::Wrapper::FloatVectorImageType,
-    otb::Wrapper::FloatImageType>
+                                                 otb::Wrapper::FloatImageType>
     ExtractFloatChannelFilterType;
 
 typedef otb::ImageListToVectorImageFilter<otb::ImageList<otb::Wrapper::FloatImageType>,
-    otb::Wrapper::FloatVectorImageType>
+                                          otb::Wrapper::FloatVectorImageType>
     ConcatenateFloatImagesFilterType;
 typedef otb::ObjectList<ConcatenateFloatImagesFilterType> ConcatenateFloatImagesFilterListType;
 
 typedef otb::ImageListToVectorImageFilter<otb::ImageList<otb::Wrapper::UInt8ImageType>,
-    otb::Wrapper::UInt8VectorImageType>
+                                          otb::Wrapper::UInt8VectorImageType>
     ConcatenateUInt8ImagesFilterType;
 typedef otb::ObjectList<ConcatenateUInt8ImagesFilterType> ConcatenateUInt8ImagesFilterListType;
 
 typedef otb::ImageListToVectorImageFilter<otb::ImageList<otb::Wrapper::Int16ImageType>,
-    otb::Wrapper::Int16VectorImageType>
+                                          otb::Wrapper::Int16VectorImageType>
     ConcatenateInt16ImagesFilterType;
 typedef otb::ObjectList<ConcatenateInt16ImagesFilterType> ConcatenateInt16ImagesFilterListType;
 
 typedef itk::CastImageFilter<otb::Wrapper::Int16ImageType, otb::Wrapper::FloatImageType>
-CastInt16FloatFilterType;
+    CastInt16FloatFilterType;
 typedef otb::ObjectList<CastInt16FloatFilterType> CastInt16FloatFilterListType;
 
 #define LANDSAT "LANDSAT"
@@ -143,7 +143,7 @@ typedef otb::ObjectList<CastInt16FloatFilterType> CastInt16FloatFilterListType;
 #define MASK_TYPE_SAT 1
 #define MASK_TYPE_DIV 2
 
-int getDaysFromEpoch(const std::string& date);
+int getDaysFromEpoch(const std::string &date);
 
 // Data related to the size and location of each tile
 struct TileData {
@@ -191,21 +191,21 @@ public:
     itkNewMacro(Self) itkTypeMacro(TimeSeriesReader, itk::Object)
 
         void Build(std::vector<std::string>::const_iterator begin,
-            std::vector<std::string>::const_iterator end,
-            const TileData& td);
+                   std::vector<std::string>::const_iterator end,
+                   const TileData &td);
 
-    void updateRequiredImageSize(const std::vector<std::string>& descriptors,
-        int startIndex,
-        int endIndex,
-        TileData& td);
+    void updateRequiredImageSize(const std::vector<std::string> &descriptors,
+                                 int startIndex,
+                                 int endIndex,
+                                 TileData &td);
     void SetMission(std::string mission);
-    const std::string& GetMission() const;
+    const std::string &GetMission() const;
     void SetPixelSize(float pixelSize);
     float GetPixelSize() const;
     void SetDescriptorList(std::vector<ImageDescriptor> descriptors);
-    const std::vector<ImageDescriptor>& GetDescriptorList() const;
+    const std::vector<ImageDescriptor> &GetDescriptorList() const;
     void SetSamplingRates(std::map<std::string, int> samplingRates);
-    const std::map<std::string, int>& GetSamplingRates() const;
+    const std::map<std::string, int> &GetSamplingRates() const;
 
 protected:
     std::string m_mission;
@@ -240,28 +240,28 @@ protected:
     virtual ~TimeSeriesReader();
 
     // Sort the descriptors based on the aquisition date
-    static bool SortUnmergedMetadata(const ImageDescriptor& o1, const ImageDescriptor& o2);
+    static bool SortUnmergedMetadata(const ImageDescriptor &o1, const ImageDescriptor &o2);
 
-    void ProcessMetadata(const std::unique_ptr<MetadataHelper<float, uint8_t>>& pHelper,
-        const std::string& filename,
-        ImageDescriptor& descriptor,
-        const TileData& td);
-    virtual void GetProductBands(const std::unique_ptr<MetadataHelper<float, uint8_t>>& pHelper,
-        const TileData& td,
-        ImageDescriptor& descriptor);
+    void ProcessMetadata(const std::unique_ptr<MetadataHelper<float, uint8_t>> &pHelper,
+                         const std::string &filename,
+                         ImageDescriptor &descriptor,
+                         const TileData &td);
+    virtual void GetProductBands(const std::unique_ptr<MetadataHelper<float, uint8_t>> &pHelper,
+                                 const TileData &td,
+                                 ImageDescriptor &descriptor);
     otb::Wrapper::UInt8ImageType::Pointer
-        GetProductMask(const std::unique_ptr<MetadataHelper<float, uint8_t>>& pHelper,
-            const TileData& td);
-    virtual void getRedEdgeBands(const std::unique_ptr<MetadataHelper<float, uint8_t>>&,
-        const TileData& td,
-        ImageDescriptor& descriptor);
+    GetProductMask(const std::unique_ptr<MetadataHelper<float, uint8_t>> &pHelper,
+                   const TileData &td);
+    virtual void getRedEdgeBands(const std::unique_ptr<MetadataHelper<float, uint8_t>> &,
+                                 const TileData &td,
+                                 ImageDescriptor &descriptor);
 
     otb::ObjectList<itk::ProcessObject>::Pointer m_Filters =
         otb::ObjectList<itk::ProcessObject>::New();
 
     template <typename ImageType>
     typename ImageType::Pointer
-        getResampledBand(const typename ImageType::Pointer& image, const TileData& td, bool isMask)
+    getResampledBand(const typename ImageType::Pointer &image, const TileData &td, bool isMask)
     {
         image->UpdateOutputInformation();
         auto imageSize = image->GetLargestPossibleRegion().GetSize();
@@ -297,8 +297,7 @@ protected:
         if (isMask) {
             interpolator = NearestNeighborInterpolationType::New();
             edgeValue = 1;
-        }
-        else {
+        } else {
             interpolator = BicubicInterpolationType::New();
             edgeValue = -10000;
         }
@@ -328,8 +327,7 @@ protected:
                 resampler->SetCheckOutputBounds(false);
 
                 output = resampler->GetOutput();
-            }
-            else {
+            } else {
                 typedef otb::StreamingResampleImageFilter<ImageType, ImageType, double>
                     ResampleFilterType;
 
@@ -346,8 +344,7 @@ protected:
 
                 output = resampler->GetOutput();
             }
-        }
-        else {
+        } else {
             typedef otb::GenericRSResampleImageFilter<ImageType, ImageType>
                 ReprojectResampleFilterType;
 
@@ -373,7 +370,7 @@ protected:
 
     template <typename ImageType>
     typename ImageType::Pointer
-        getResampledBand2(const typename ImageType::Pointer& image, const TileData& td, bool isMask)
+    getResampledBand2(const typename ImageType::Pointer &image, const TileData &td, bool isMask)
     {
         image->UpdateOutputInformation();
         auto imageSize = image->GetLargestPossibleRegion().GetSize();
@@ -412,8 +409,7 @@ protected:
         if (isMask) {
             interpolator = NearestNeighborInterpolationType::New();
             edgeValue = 1;
-        }
-        else {
+        } else {
             interpolator = BicubicInterpolationType::New();
             edgeValue = -10000;
         }
@@ -441,8 +437,7 @@ protected:
             resampler->SetCheckOutputBounds(false);
 
             output = resampler->GetOutput();
-        }
-        else {
+        } else {
             typedef otb::GenericRSResampleImageFilter<ImageType, ImageType>
                 ReprojectResampleFilterType;
 
@@ -471,7 +466,7 @@ protected:
     //        return date.substr(0,4) + date.substr(5,2) + date.substr(8,2);
     //    }
 
-    virtual int getBandCount(const std::string& sensor)
+    virtual int getBandCount(const std::string &sensor)
     {
         if (sensor == "SENTINEL" || sensor == "SPOT" || sensor == "LANDSAT") {
             return 4;
@@ -500,12 +495,12 @@ enum class TemporalResamplingMode {
 
 template <typename TTimeSeriesReaderList>
 std::vector<MissionDays> getOutputDays(TTimeSeriesReaderList preprocessors,
-    TemporalResamplingMode resamplingMode,
-    const std::string& mainMission,
-    const std::vector<SensorPreferences>& sp)
+                                       TemporalResamplingMode resamplingMode,
+                                       const std::string &mainMission,
+                                       const std::vector<SensorPreferences> &sp)
 {
     std::map<std::string, SensorPreferences> spMap;
-    for (const auto& e : sp) {
+    for (const auto &e : sp) {
         spMap[e.mission] = e;
     }
 
@@ -513,7 +508,7 @@ std::vector<MissionDays> getOutputDays(TTimeSeriesReaderList preprocessors,
     std::map<std::string, std::vector<int>> sensorOutDays;
 
     for (unsigned int i = 0; i < preprocessors->Size(); i++) {
-        for (const auto& id : preprocessors->GetNthElement(i)->GetDescriptorList()) {
+        for (const auto &id : preprocessors->GetNthElement(i)->GetDescriptorList()) {
             auto inDay = getDaysFromEpoch(id.aquisitionDate);
             sensorInDays[id.mission].emplace(inDay);
         }
@@ -521,12 +516,12 @@ std::vector<MissionDays> getOutputDays(TTimeSeriesReaderList preprocessors,
 
     std::vector<int> mainMissionDays;
     if (resamplingMode == TemporalResamplingMode::GapFillMainMission) {
-        const auto& days = sensorInDays[mainMission];
+        const auto &days = sensorInDays[mainMission];
         mainMissionDays.assign(days.begin(), days.end());
     }
 
     // loop through the sensors to determinte the output dates
-    for (const auto& sensor : sensorInDays) {
+    for (const auto &sensor : sensorInDays) {
         std::vector<int> outDates;
         if (resamplingMode == TemporalResamplingMode::Resample) {
             auto it = spMap.find(sensor.first);
@@ -539,28 +534,26 @@ std::vector<MissionDays> getOutputDays(TTimeSeriesReaderList preprocessors,
             for (int date = *sensor.second.begin(); date <= last; date += rate) {
                 outDates.emplace_back(date);
             }
-        }
-        else if (resamplingMode == TemporalResamplingMode::GapFill) {
+        } else if (resamplingMode == TemporalResamplingMode::GapFill) {
             outDates.assign(sensor.second.begin(), sensor.second.end());
-        }
-        else if (resamplingMode == TemporalResamplingMode::GapFillMainMission) {
+        } else if (resamplingMode == TemporalResamplingMode::GapFillMainMission) {
             outDates = mainMissionDays;
         }
         sensorOutDays[sensor.first] = std::move(outDates);
     }
 
     std::vector<MissionDays> res;
-    for (const auto& e : sensorOutDays) {
+    for (const auto &e : sensorOutDays) {
         res.emplace_back(MissionDays{ std::move(e.first), std::move(e.second) });
     }
-    std::sort(std::begin(res), std::end(res), [&](const MissionDays& e1, const MissionDays& e2) {
+    std::sort(std::begin(res), std::end(res), [&](const MissionDays &e1, const MissionDays &e2) {
         return spMap[e1.mission].priority < spMap[e2.mission].priority;
-        });
+    });
     return res;
 }
 
-void writeOutputDays(const std::vector<MissionDays>& days, const std::string& file);
+void writeOutputDays(const std::vector<MissionDays> &days, const std::string &file);
 
-std::vector<SensorPreferences> parseSensorPreferences(const std::vector<std::string>& sp);
+std::vector<SensorPreferences> parseSensorPreferences(const std::vector<std::string> &sp);
 
-const std::vector<MissionDays> readOutputDays(const std::string& file);
+const std::vector<MissionDays> readOutputDays(const std::string &file);
