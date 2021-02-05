@@ -30,7 +30,7 @@
  PURPOSE.  See the above copyright notices for more information.
 
  =========================================================================*/
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 
 #include "otbWrapperApplication.h"
 #include "otbWrapperApplicationFactory.h"
