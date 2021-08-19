@@ -843,7 +843,7 @@ void CropMaskTrainImagesClassifier::DoExecute()
     //ForestAccuracy
     AddParameter(ParameterType_Float, "classifier.rf.acc",
                  "Sufficient accuracy (OOB error)");
-    SetParameterFloat("classifier.rf.acc", 0.01);
+    SetParameterFloat("classifier.rf.acc", 0.00001);
     SetParameterDescription("classifier.rf.acc","Sufficient accuracy (OOB error).");
 
 
