@@ -314,7 +314,7 @@ private:
         classifier->SetMaxNumberOfCategories(10);
         classifier->SetMaxNumberOfVariables(0);
         classifier->SetMaxNumberOfTrees(rfnbtrees);
-        classifier->SetForestAccuracy(0.00001);
+        classifier->SetForestAccuracy(1e-7);
         classifier->SetCalculateVariableImportance(true);
         std::cout << "STARTING LEARNING"  <<std::endl;
 
