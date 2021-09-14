@@ -3,8 +3,7 @@
 from __future__ import print_function
 
 from collections import defaultdict
-from osgeo import ogr, osr
-import gdal
+from osgeo import ogr, osr, gdal
 import os
 import os.path
 import glob
