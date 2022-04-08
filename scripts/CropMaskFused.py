@@ -350,6 +350,7 @@ class CropMaskProcessor(ProcessorBase):
                          "-progress", "true",
                          "-mission", self.args.mission.name,
                          "-pixsize", self.args.pixsize,
+                         "-window", self.args.window,
                          "-bv", -10000,
                          "-nodatalabel", -10000,
                          "-bm", "true" if self.args.bm else "false",
